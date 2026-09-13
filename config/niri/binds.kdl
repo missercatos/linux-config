@@ -167,7 +167,7 @@ binds {
     Mod+Comma  { consume-window-into-column; }
     Mod+Period { expel-window-from-column; }
     // mod+shift+A/D 同效果
-    Mod+Shift+A  { spawn "~/.local/bin/wl-longshot-toggle"; }
+    Mod+Shift+A hotkey-overlay-title="长截图 Long screenshot (再按停止)" { spawn "~/.local/bin/wl-longshot-toggle"; }
     Mod+Shift+D { expel-window-from-column; }
     
     // 开启colume的标签页模式

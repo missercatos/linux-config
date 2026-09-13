@@ -320,6 +320,19 @@ if [[ -d "$REPO_DIR/niri/.config/niri" ]]; then
     cp -r "$REPO_DIR/niri/.config/niri/"* ~/.config/niri/ 2>/dev/null || true
 fi
 
+# niri: 部署自定义键位(dms/binds.kdl)与脚本(含 Mod+Shift+? 快捷键菜单)
+if [[ -f "$REPO_DIR/config/niri/binds.kdl" ]]; then
+    mkdir -p ~/.config/niri/dms
+    cp "$REPO_DIR/config/niri/binds.kdl" ~/.config/niri/dms/binds.kdl
+    info "已部署 niri 自定义键位 (dms/binds.kdl)"
+fi
+if [[ -d "$REPO_DIR/config/niri/scripts" ]]; then
+    mkdir -p ~/.config/niri/scripts
+    cp -r "$REPO_DIR/config/niri/scripts/"* ~/.config/niri/scripts/ 2>/dev/null || true
+    chmod +x ~/.config/niri/scripts/* 2>/dev/null || true
+    info "已部署 niri 脚本 (含 niri-binds 快捷键菜单)"
+fi
+
 # Ensure hyprland config directory exists
 mkdir -p ~/.config/hypr
 if [[ -d "$REPO_DIR/hyprland/.config/hypr" ]]; then
@@ -439,6 +452,18 @@ if [[ -f "$REPO_DIR/config/opencode/opencode.jsonc" ]]; then
     mkdir -p ~/.config/opencode
     cp "$REPO_DIR/config/opencode/opencode.jsonc" ~/.config/opencode/opencode.jsonc
     info "已部署 opencode 配置(默认 deepseek 直连)"
+fi
+
+# Deploy cava / btop 配置(含 foot 专用绿色主题)
+if [[ -d "$REPO_DIR/config/cava" ]]; then
+    mkdir -p ~/.config/cava
+    cp -r "$REPO_DIR/config/cava/"* ~/.config/cava/ 2>/dev/null || true
+    info "已部署 cava 配置(绿色主题 green.conf)"
+fi
+if [[ -d "$REPO_DIR/config/btop" ]]; then
+    mkdir -p ~/.config/btop
+    cp -r "$REPO_DIR/config/btop/"* ~/.config/btop/ 2>/dev/null || true
+    info "已部署 btop 配置(含 foot-btop 绿色主题)"
 fi
 
 # Add to shell config
