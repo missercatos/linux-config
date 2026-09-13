@@ -233,6 +233,7 @@ AUR_PKGS=(
     github-desktop-bin
     wayscriber-bin
     obs-cmd-bin
+    wl-longshot-git
     # VPN/Proxy
     flclash-bin
     mihomo

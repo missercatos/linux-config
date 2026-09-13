@@ -1,0 +1,46 @@
+#!/bin/bash
+# wl-longshot-toggle: Mod+Shift+A 开始/停止长截图
+# 第一次按: slurp 框选区域开始捕获; 再按一次: 停止并保存(默认复制到剪贴板)
+set -u
+
+RUNTIME="${XDG_RUNTIME_DIR:-/tmp}"
+FIFO="$RUNTIME/wl-longshot.fifo"
+PIDFILE="$RUNTIME/wl-longshot.pid"
+OUTDIR="${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots/longshots"
+
+# --- worker 模式: 持有 FIFO 并运行 wl-longshot ---
+if [[ "${1:-}" == "--worker" ]]; then
+    shift
+    before=$(ls -1 "$OUTDIR" 2>/dev/null | wc -l)
+    rm -f "$FIFO"
+    mkfifo "$FIFO" || exit 1
+    exec 3<>"$FIFO"
+    wl-longshot --control stdin "$@" <&3
+    rc=$?
+    exec 3>&-
+    rm -f "$FIFO" "$PIDFILE"
+    after=$(ls -1 "$OUTDIR" 2>/dev/null | wc -l)
+    if [[ $rc -eq 0 && $after -gt $before ]]; then
+        notify-send -a "长截图" "长截图完成" "已保存到 $OUTDIR 并复制到剪贴板"
+    elif [[ $rc -eq 0 ]]; then
+        notify-send -a "长截图" "已取消" "未选择区域或未保存"
+    else
+        notify-send -a "长截图" "长截图失败" "退出码 $rc"
+    fi
+    exit $rc
+fi
+
+# --- 已运行 -> 发送停止信号 ---
+if [[ -f "$PIDFILE" ]]; then
+    pid="$(cat "$PIDFILE" 2>/dev/null)"
+    if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+        timeout 1 bash -c "printf 'f\n' > '$FIFO'" 2>/dev/null || true
+        exit 0
+    fi
+    rm -f "$PIDFILE" "$FIFO"
+fi
+
+# --- 启动 worker ---
+"$0" --worker "$@" >/dev/null 2>&1 &
+echo $! > "$PIDFILE"
+notify-send -a "长截图" "开始长截图" "框选区域后滚动内容，再按 Mod+Shift+A 停止"
