@@ -5,6 +5,12 @@ set fish_greeting ""
 fish_vi_key_bindings
 function fish_mode_prompt; end
 
+# ===== 自动建议(幽灵文本)颜色：淡灰，与 nvim 补全保持一致，能看清又不与已输入内容混淆 =====
+set -g fish_color_autosuggestion 8a94a8
+# 补全候选列表选中项也要清晰可辨
+set -g fish_color_selection --background=2f3d5e
+set -g fish_color_search_match --background=2f3d5e
+
 # ===== Clash 终端自动代理 =====
 # 仅交互终端生效: 检测到 clash 端口(7890)开启 -> 自动启用代理加速
 # 未开启 -> 不设代理, 走默认网络 (不影响 Chrome/Firefox 等 GUI)
@@ -113,4 +119,7 @@ function 卸载
 	command yay -Rns $argv
 end 
 
+
+
+# conda 已通过 /opt/miniconda3/etc/fish/conf.d/conda.fish 自动加载，无需重复初始化
 
