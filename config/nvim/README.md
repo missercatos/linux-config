@@ -91,10 +91,12 @@ C、C++、Rust、Python、Java、Kotlin、Go、JavaScript、TypeScript、HTML、
 | `-` | oil.nvim 打开上级目录（vim-vinegar 风格） |
 | `<space>pc` | **一键创建框架工程**（选语言 → 选模板 → 输入项目名，共 100 个模板；**不会改变工作目录**） |
 | `<space>pu` / `<space>pE` / `<space>pw` | 目录跳转：上一级 / 进入当前项目 / 回到工作区（也可用 `:ArkCd [path\|..\|-]`） |
-| `<space>Bb/Br/Bt/Bc` | 构建 / 运行 / 测试 / 清理当前项目 |
+| `<space>Bb/Br/Bt/Bc` | 构建 / 运行 / 测试 / 清理当前项目（键位常驻；不在项目里会直接告诉你） |
 | `<space>Bw` / `<space>BW` | watch 模式：保存文件自动重跑 build / test（再按一次关闭） |
 | `<space>Bo` / `<space>BR` | overseer 任务面板 / 运行任务 |
-| `<space>tw` / `<space>tW` / `<space>tq` | 实时测试：watch 当前文件 / 整个项目 / 停止全部 |
+| `<space>tw` / `<space>tW` / `<space>tq` | 实时测试：watch 当前文件 / 整个项目 / 停止全部（neotest 不可用时自动退回保存触发） |
+| `<space>ti` | 实时测试诊断（项目/类型/LSP/适配器状态） |
+| `<space>dR` 或 `:ArkDebug` | **调试整个项目**（有 DAP 配置就弹选择；没有就按项目类型以调试模式启动） |
 | `<space>us` 或 `:ArkTrail` | 光标拖影开关（见下方「光标拖影」） |
 | `<space>uM` | **媒体文件：渲染 ↔ 源码（字节）切换**（图片/视频/GIF/PDF） |
 | `<space>Mm` / `<space>Me` | 音乐：mpv 播放器组件 / echo.nvim 音效试听 |
@@ -223,9 +225,81 @@ vim.g.arkvim_native_cursor_trail = false  -- 反过来：强制启用插件
 | `:ArkMusic player on` | 开启 nvim 内置本地音乐播放器（[player.nvim](https://github.com/jmatth11/player.nvim)）→ `<space>Mf` 选歌窗口 · `<space>Mp` 播放器面板 |
 | `:ArkMusic mpv` / `<space>Mm` | mpv 播放器小组件（[mpv.nvim](https://github.com/tamton-aquib/mpv.nvim)） |
 | `:ArkMusic echo` / `<space>Me` | 试听 [echo.nvim](https://github.com/melMass/echo.nvim) 音效（Windows / macOS 默认启用） |
-| `:ArkMusic status` | 查看各开关与依赖状态 |
+| `:ArkMusic status` | 查看各开关与依赖状态（含 player.nvim 原生库是否已构建） |
 
-依赖：`mpv`（自动播放 / mpv.nvim）、`player.nvim` 需要 build 脚本（仅类 Unix）、`echo.nvim` 需要它的 Rust 二进制。
+依赖与首次准备：
+
+- **mpv**：自动播放和 mpv.nvim 需要（Arch：`sudo pacman -S mpv`；Windows：`scoop install mpv`）
+- **player.nvim**：需要构建原生库，装完插件后先跑一次
+  ```
+  :Lazy build player.nvim
+  ```
+  它会自动下载 Zig 并编译（首次几分钟，需联网）。没构建时 `:ArkMusic player on` 会提示而不是报错。
+  仅类 Unix 有 `build.sh`，**Windows 上跳过构建，该功能不可用**。
+- **echo.nvim**：需要它自己的 Rust 二进制（`melMass/echo.nvim` 的 README 说明 0.0.1 的 lazy 安装还拿不到二进制）；仅在 Windows / macOS 默认启用。
+- **ambience.nvim**：GitHub 上找不到该插件，暂未接入（`:ArkMusic ambience` 会提示）。
+
+## 项目识别：`<leader>B*` 到底作用在哪个项目
+
+`<leader>Bb/Br/Bt/Bc`、`<leader>Bw/BW`、`<leader>dR`、实时测试都依赖「当前项目」的判断。
+规则（`arkvim/project.lua`）：
+
+1. **以当前文件所在目录为准**，不是以 nvim 的 cwd 为准。
+   （以前用 cwd 找 git 根，在 `~/.config/nvim` 里打开别的项目的文件时会把项目认错，
+   于是 `<leader>Bt` 要么提示「不支持当前项目类型」，要么干脆没反应。）
+2. 项目根取 **git 仓库根**；如果 git 根上没有构建清单（marker），
+   就用**离文件最近的子项目**（monorepo 的 `packages/web` 这类）。
+   多模块 Gradle/Maven 因此会正确地在仓库根跑（`./gradlew`、`./mvnw`）。
+3. 没有 git 时用最近的 marker 目录；什么 marker 都没有 → 提示「未检测到项目」。
+4. `<leader>B*` 键位**始终注册**，按了没反应会明确告诉你原因（项目类型不支持 / 未检测到项目）。
+
+## 调试 / 实时测试（含框架项目）
+
+LazyVim 只为 java/go/python/ruby/rust/c/cpp/js/ts 提供了 DAP 配置，
+**Kotlin、Android、Gradle 这类框架项目 `<leader>dc` 会直接报 "No configurations found"**。
+这里补了一层：
+
+### `<leader>dR` / `:ArkDebug`　调试整个项目
+
+| 情况 | 行为 |
+|---|---|
+| 当前文件类型**有** DAP 配置（Java/Python/Go/Rust/Node…） | 走 `dap.continue()`，弹出配置选择（等同 `<leader>dc`） |
+| **没有**配置（Kotlin/Android/Dart…） | 按项目类型用「带调试端口启动」的命令在终端里跑 |
+
+`arkvim/dap.lua` 会：
+- 把 LazyVim 的 **java 配置复制给 kotlin**（同一个 JVM 调试器）
+- 补一个通用 **`Attach to JVM (port 5005)`** 配置，配 `:ArkDebug attach` 连接
+
+按项目类型的内置调试启动（`arkvim/build.lua`）：
+
+| 项目 | 调试启动命令 |
+|---|---|
+| Maven / Spring Boot | `mvn spring-boot:run -Dspring-boot.run.jvmArguments="-agentlib:jdwp=…address=*:5005"` |
+| Gradle / Spring | `./gradlew bootRun --debug-jvm`（挂在 5005 等 attach） |
+| Gradle / Android | `./gradlew installDebug`（装到设备） |
+| Gradle / 普通 JVM | `./gradlew run --debug-jvm` |
+| Java CLI | `java -agentlib:jdwp=…,suspend=y,address=5005 -cp out <Main>` |
+| Go / Node / Python | `dlv debug .` / `NODE_OPTIONS=--inspect npm run dev` / debugpy |
+
+> Gradle task 是自动识别的（读根目录 + `app/` + version catalog），
+> 因为很多项目用 `alias(libs.plugins.android.application)` 或 convention plugin，
+> 不能只搜 `com.android.application`。
+
+### 实时测试
+
+常用三个键：
+
+| 键 | 行为 |
+|---|---|
+| `<space>tw` | neotest watch 当前文件 |
+| `<space>tW` | neotest watch 整个项目 |
+| `<space>tq` | 停止所有 watch |
+| `<space>ti` | 诊断：项目 / 文件类型 / LSP / 适配器 / 能否 watch |
+
+**neotest 的 watch 需要两件事**：该语言有 neotest adapter + 有 LSP client 附加。
+框架项目常常不满足（Kotlin/Android 没有 neotest adapter），这时会**自动退回**
+`arkvim.build` 的「保存触发测试」（和 `<space>BW` 同一套，不依赖 LSP 和 adapter），
+并给一条提示说明为什么退回。
 
 ## 其它新增插件
 
