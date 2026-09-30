@@ -1,0 +1,19 @@
+# ---- 运行时/临时文件（不入库）----
+# fcitx5 运行时状态
+config/fcitx5/profile*
+config/fcitx5/conf/cached_layouts
+config/fcitx5/conf/chttrans.conf_*
+
+# shell 运行时状态
+config/fish/fish_variables
+
+# 编辑器临时缓冲区
+config/nvim/Untitled
+
+# 备份/临时文件
+config/hypr/hyprland.conf.bak
+config/niri/config.kdl.bak
+config/niri/config.kdl.backup*
+config/gtk-3.0/gtk.css.backup.*
+*.tmp
+*~

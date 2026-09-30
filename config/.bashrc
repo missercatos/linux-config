@@ -5,7 +5,7 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# TTY Environment
+# Unified environment for all terminals
 export STARSHIP_CONFIG="$HOME/.config/tactical/starship.toml"
 export ZDOTDIR="$HOME/.config/tactical/zsh"
 
@@ -32,3 +32,6 @@ fi
 if [[ -f ~/.local/bin/generate-starship-config ]]; then
     ~/.local/bin/generate-starship-config >/dev/null 2>&1
 fi
+
+export ANDROID_HOME=~/Android/Sdk
+export PATE=$PATH:ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator

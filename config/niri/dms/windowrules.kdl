@@ -1,0 +1,157 @@
+// DMS Window Rules - Managed by DankMaterialShell
+// Do not edit manually - changes may be overwritten
+
+// @id=dms_rule_0 @name=
+window-rule {
+    opacity 0.99
+    geometry-corner-radius 8
+    clip-to-geometry true
+    draw-border-with-background false
+}
+
+// @id=dms_rule_1 @name=
+window-rule {
+    match app-id="imv"
+    open-floating true
+}
+
+// @id=dms_rule_2 @name=
+window-rule {
+    match app-id="steam" title="Friends List"
+    match app-id="steam" title="好友列表"
+    default-column-width { proportion 0.2; }
+}
+
+// @id=dms_rule_3 @name=
+window-rule {
+    match app-id="shorinclip"
+    open-floating true
+    default-column-width { fixed 625; }
+    default-window-height { fixed 700; }
+    default-floating-position x=0 y=18 relative-to="top"
+}
+
+// @id=dms_rule_4 @name=
+window-rule {
+    match app-id="com.gabm.satty"
+    match app-id="media_info"
+    match app-id="video2gif"
+    match app-id="floating-term"
+    match app-id="nm-connection-editor"
+    match app-id="niri-quick-switch"
+    match app-id="firefox$" title="^Picture-in-Picture$"
+    match app-id="steam" title="Friends List"
+    match app-id="blueberry.py" title="蓝牙"
+    match app-id="blueman-manager"
+    match app-id="flameshot"
+    match app-id="com.github.hluk.copyq"
+    match app-id="be.alexandervanhee.gradia"
+    match app-id="org.pulseaudio.pavucontrol" title="音量控制"
+    match app-id="org.gnome.clocks" title="时钟"
+    match app-id="fcitx" title="Fcitx5 Input Window"
+    match app-id="org.gnome.FileRoller"
+    match app-id="thunar" title="文件操作进度"
+    match app-id="waypaper"
+    match app-id="clipse-gui"
+    match title="群聊的聊天记录"
+    match title="聊天记录"
+    match title="日历"
+    match title="重命名"
+    match app-id="btrfs-assistant"
+    match app-id="markpix"
+    match title="Steam 设置"
+    match title="另存为"
+    match app-id="better_control.py"
+    match app-id="niri-hotkey-menu"
+    open-floating true
+}
+
+// @id=dms_rule_5 @name=
+window-rule {
+    match app-id="QQ" title="资料卡"
+    match app-id="QQ" title="天气"
+    open-focused false
+}
+
+// @id=dms_rule_6 @name=
+window-rule {
+    match app-id="quickterminal"
+    open-floating true
+    default-floating-position x=20 y=20 relative-to="top"
+}
+
+// @id=dms_rule_7 @name=
+window-rule {
+    match app-id="nvim-float-term"
+    match title="^编译运行$"
+    open-floating true
+    default-column-width { fixed 800; }
+    default-window-height { fixed 500; }
+}
+
+// @id=dms_rule_8 @name=
+window-rule {
+    match app-id="bluetui"
+    match app-id="impala"
+    open-floating true
+    default-column-width { fixed 800; }
+    default-window-height { fixed 800; }
+}
+
+// @id=dms_rule_9 @name=
+window-rule {
+    match app-id="clipse"
+    open-floating true
+    default-column-width { fixed 625; }
+    default-window-height { fixed 700; }
+}
+
+// @id=dms_rule_10 @name=
+window-rule {
+    match title="gsr ui"
+    match app-id="waydroid"
+    open-floating true
+    open-fullscreen true
+    focus-ring { off; }
+}
+
+// @id=dms_rule_11 @name=
+window-rule {
+    match title="图片查看器"
+    match title="画中画"
+    match title="图片和视频"
+    match title="视频播放器"
+    opacity 1.00
+    open-floating true
+}
+
+// @id=dms_rule_12 @name=
+window-rule {
+    match app-id="mpv"
+    match app-id="celluloid"
+    opacity 1.00
+}
+
+// @id=dms_rule_13 @name=
+window-rule {
+    match app-id="^org\\.wezfurlong\\.wezterm$"
+}
+
+// @id=dms_rule_14 @name=
+window-rule {
+    match app-id="steam" title="^notificationtoasts_\\d+_desktop$"
+    open-focused false
+    default-floating-position x=10 y=10 relative-to="bottom-right"
+}
+
+// @id=dms_rule_15 @name=
+window-rule {
+    match app-id="google-chrome"
+    opacity 0.90
+}
+
+// @id=dms-floating-windows @name=DMS Floating Windows
+window-rule {
+    match app-id="^com.danklinux.dms$"
+    open-floating true
+}

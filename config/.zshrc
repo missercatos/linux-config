@@ -1,4 +1,4 @@
-# TTY Environment
+# Unified shell config for all terminals
 export STARSHIP_CONFIG="$HOME/.config/tactical/starship.toml"
 export ZDOTDIR="$HOME/.config/tactical/zsh"
 
@@ -16,6 +16,8 @@ zle -N zle-line-init _zsh_cursor
 bindkey -M viins 'jk' vi-cmd-mode
 bindkey -M viins 'kj' vi-cmd-mode
 
+# Generate starship config from DMS theme
+~/.local/bin/generate-starship-dms >/dev/null 2>&1
 eval "$(starship init zsh)"
 
 HISTFILE=~/.zsh_history
