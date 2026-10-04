@@ -1,83 +1,42 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 format = """
-[░▒▓](#a3aed2)\
+[](purple)\
 $os\
-[](bg:#769ff0 fg:#a3aed2)\
+$username\
+[](bg:cyan fg:purple)\
 $directory\
-[](fg:#769ff0 bg:#394260)\
+[](bg:pink fg:cyan)\
 $git_branch\
 $git_status\
-[](fg:#394260 bg:#212736)\
-$nodejs\
-$bun\
+[](fg:pink bg:green)\
+$c\
 $rust\
 $golang\
+$nodejs\
 $php\
-[](fg:#212736 bg:#1d2230)\
+$java\
+$kotlin\
+$haskell\
+$python\
+[](fg:green bg:comment)\
+$conda\
+[](fg:comment bg:comment)\
 $time\
-[ ](fg:#1d2230)\
-\n$character"""
+[ ](fg:comment)\
+$cmd_duration\
+$line_break\
+$character"""
 
-[directory]
-style = "fg:#e3e5e5 bg:#769ff0"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-
-[git_branch]
-symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
-
-[git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
-
-[nodejs]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[bun]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[rust]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[golang]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[php]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[time]
-disabled = false
-time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
+palette = 'eva'
 
 [os]
-style = "bg:#a3aed2 fg:#090c0c"
-format = "[ $symbol ]($style)"
 disabled = false
+style = "bg:purple fg:crust"
 
 [os.symbols]
-Windows = "󰍲"
+CachyOS = "󰣇"
+Windows = ""
 Ubuntu = "󰕈"
 SUSE = ""
 Raspbian = "󰐿"
@@ -90,12 +49,134 @@ Fedora = "󰣛"
 Alpine = ""
 Amazon = ""
 Android = ""
-AOSC = ""
 Arch = "󰣇"
 Artix = "󰣇"
-EndeavourOS = ""
 CentOS = ""
 Debian = "󰣚"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
-Pop = ""
+
+[username]
+show_always = true
+style_user = "bg:purple fg:crust"
+style_root = "bg:purple fg:crust"
+format = '[ $user]($style)'
+
+[directory]
+style = "bg:cyan fg:crust"
+format = "[ $path ]($style)"
+truncation_length = 3
+truncation_symbol = "…/"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = "󰝚 "
+"Pictures" = " "
+"Developer" = "󰲋 "
+
+[git_branch]
+symbol = ""
+style = "bg:pink"
+format = '[[ $symbol $branch ](fg:crust bg:pink)]($style)'
+
+[git_status]
+style = "bg:pink"
+format = '[[($all_status$ahead_behind )](fg:crust bg:pink)]($style)'
+
+[nodejs]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[c]
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[rust]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[golang]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[php]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[java]
+symbol = " "
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[kotlin]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[haskell]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version) ](fg:crust bg:green)]($style)'
+
+[python]
+symbol = ""
+style = "bg:green"
+format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:crust bg:green)]($style)'
+
+[docker_context]
+symbol = ""
+style = "bg:comment"
+format = '[[ $symbol( $context) ](fg:crust bg:comment)]($style)'
+
+[conda]
+symbol = "  "
+style = "fg:crust bg:comment"
+format = '[$symbol$environment ]($style)'
+ignore_base = false
+
+[time]
+disabled = false
+time_format = "%_I:%M %p"
+style = "bg:comment"
+format = '[[  $time ](fg:crust bg:comment)]($style)'
+
+[line_break]
+disabled = true
+
+[character]
+disabled = false
+success_symbol = '[❯](bold fg:green)'
+error_symbol = '[❯](bold fg:red)'
+vimcmd_symbol = '[❮](bold fg:green)'
+vimcmd_replace_one_symbol = '[❮](bold fg:purple)'
+vimcmd_replace_symbol = '[❮](bold fg:purple)'
+vimcmd_visual_symbol = '[❮](bold fg:yellow)'
+
+[cmd_duration]
+show_milliseconds = true
+min_time = 0
+format = " in $duration "
+style = "bg:purple"
+disabled = false
+show_notifications = true
+min_time_to_notify = 45000
+
+[palettes.eva]
+
+pink = "#c77dff"
+red = "#ff5964"
+yellow = "#b388ff"
+green = "#7b2cbf"
+blue = "#9d4edd"
+purple = "#9d4edd"
+cyan = "#b388ff"
+comment = "#3a2554"
+base = "#150f1e"
+mantle = "#1e1529"
+crust = "#e8ddff"
