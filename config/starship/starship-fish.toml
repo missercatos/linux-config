@@ -1,6 +1,6 @@
 format = """
 [](#9A348E)\
-[ ](bg:#9A348E fg:#FFFFFF)\
+[$os](bg:#9A348E fg:#FFFFFF)\
 $username\
 [](bg:#DA627D fg:#9A348E)\
 [ ](bg:#DA627D fg:#FFFFFF)\
@@ -52,9 +52,15 @@ disabled = false
 
 # An alternative to the username module which displays a symbol that
 # represents the current operating system
+[os.symbols]
+CachyOS = "󰣇"
+Arch = "󰣇"
+Linux = "󰌽"
+
 [os]
-style = "bg:#9A348E"
-disabled = true # Disabled by default
+style = "bg:#9A348E fg:#FFFFFF"
+format = "[$symbol ]($style)"
+disabled = false
 
 [directory]
 style = "fg:#FFFFFF bg:#DA627D"
