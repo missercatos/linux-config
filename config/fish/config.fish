@@ -83,6 +83,7 @@ end
 set -gx MANPATH /usr/share/man/zh_CN:
 set -gx LANGUAGE zh_CN.UTF-8
 set -p PATH ~/hackingtools/bin ~/.local/bin ~/.cargo/bin
+export STARSHIP_CONFIG=~/.config/starship/starship-fish.toml
 starship init fish | source
 #zoxide init fish --cmd cd | source  # 未安装 zoxide，先注释；装好 sudo pacman -S zoxide 后取消注释
 # 111

@@ -10,7 +10,7 @@ alias grep='grep --color=auto'
 PS1='[\u@\h \W]\$ '
 . "$HOME/.cargo/env"
 
-export STARSHIP_CONFIG=~/.config/starship/themes/eva.toml
+export STARSHIP_CONFIG=~/.config/starship/starship-bash.toml
 eval "$(starship init bash)"
 
 # bash Tab 补全
