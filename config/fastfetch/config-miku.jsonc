@@ -1,0 +1,171 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
+  "display": {
+    "separator": " ",
+    "color": {
+      "title": "#d9f7f3",
+      "output": "#d9f7f3"
+    },
+  },
+  "modules": [
+    "break",
+    {
+      "type": "os",
+      "key": "OS",
+      "keyColor": "#39c5bb",
+    },
+    {
+      "type": "kernel",
+      "key": " ├   KER ",
+      "keyColor": "#39c5bb",
+    },
+    {
+      "type": "packages",
+      "key": " ├   PAK ",
+      "format": "{all}",
+      "keyColor": "#39c5bb",
+    },
+    {
+      "type": "uptime",
+      "key": " ├   UPT ",
+      "keyColor": "#39c5bb",
+    },
+    {
+      "type": "locale",
+      "key": " ├   LOC ",
+      "keyColor": "#39c5bb",
+    },
+    {
+      "type": "title",
+      "key": " └   USR ",
+      "keyColor": "#39c5bb",
+    },
+    "break",
+    "break",
+    {
+      "type": "wm",
+      "key": "WM",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "de",
+      "key": " ├ 󱈹  DES ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "wmtheme",
+      "key": " ├ 󰧨  WMT ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "theme",
+      "key": " ├   THE ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "icons",
+      "key": " ├ 󰸳  ICO ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "font",
+      "key": " ├ 󰎠  FNT ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "cursor",
+      "key": " ├ 󰞞  CUR ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "shell",
+      "key": " ├   SHE ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "terminal",
+      "key": " ├   TER ",
+      "keyColor": "#b2f5ea",
+    },
+    {
+      "type": "terminalfont",
+      "key": " └   TFO ",
+      "keyColor": "#b2f5ea",
+    },
+    "break",
+    "break",
+    {
+      "type": "host",
+      "key": "PC ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "cpu",
+      "key": " ├   CPU ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "memory",
+      "key": " ├   MEM ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "swap",
+      "key": " ├ 󰋊  SWP ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "gpu",
+      "key": " ├ 󰢮  GPU ",
+      "format": "{1} {2}",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "display",
+      "key": " ├   MON ",
+      "format": "{name} {width}x{height}@{refresh-rate} ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "disk",
+      "key": " ├ 󰋊  / ",
+      "keyColor": "#7ef9e0",
+      "folders": ["/"],
+    },
+    {
+      "type": "disk",
+      "key": " ├ 󰋊  /home ",
+      "keyColor": "#7ef9e0",
+      "folders": ["/home"],
+    },
+    {
+      "type": "disk",
+      "key": " ├ 󰋊  /var ",
+      "keyColor": "#7ef9e0",
+      "folders": ["/var"],
+    },
+    {
+      "type": "disk",
+      "key": " ├ 󰋊  /data ",
+      "keyColor": "#7ef9e0",
+      "folders": ["/data"],
+    },
+    {
+      "type": "localip",
+      "key": " ├ 󰩠  LAN ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "battery",
+      "key": " ├ 󰂄  BAT ",
+      "keyColor": "#7ef9e0",
+    },
+    {
+      "type": "poweradapter",
+      "key": " └ 󰈀  PWR ",
+      "keyColor": "#7ef9e0",
+    },
+    "break",
+    "break",
+  ]
+}

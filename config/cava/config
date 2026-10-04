@@ -69,7 +69,7 @@
 
 # use theme file instead of defining colors in this file
 # themes are located in $HOME/.config/cava/themes
- theme = 'your-theme'
+ theme = 'tokyonight'
 
 
 [smoothing]

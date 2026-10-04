@@ -1,3 +1,17 @@
+source /usr/share/cachyos-fish-config/cachyos-config.fish
+
+# cachyos 的 eza 别名保留颜色，但 ls 去掉 -al（不再默认长列表/全显隐藏文件）
+alias ls='eza --color=always --group-directories-first --icons=always'
+alias la='eza -a --color=always --group-directories-first --icons=always'
+alias ll='eza -l --color=always --group-directories-first --icons=always'
+alias lt='eza -aT --color=always --group-directories-first --icons=always'
+alias l.="eza -a | grep -e '^\.'"
+
+set -gx HF_HOME /data/ai/cache/huggingface
+set -gx TORCH_HOME /data/ai/cache/torch
+set -gx OLLAMA_MODELS /data/ai/cache/ollama
+set -gx UV_CACHE_DIR /data/ai/cache/uv
+
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
@@ -69,11 +83,8 @@ end
 set -gx MANPATH /usr/share/man/zh_CN:
 set -gx LANGUAGE zh_CN.UTF-8
 set -p PATH ~/hackingtools/bin ~/.local/bin
-set -gx STARSHIP_CONFIG ~/.config/tactical/starship.toml
-# Generate starship config from DMS theme
-~/.local/bin/generate-starship-dms >/dev/null 2>&1
 starship init fish | source
-zoxide init fish --cmd cd | source
+#zoxide init fish --cmd cd | source  # 未安装 zoxide，先注释；装好 sudo pacman -S zoxide 后取消注释
 # 111
 function y
 	set tmp (mktemp -t "yazi-cwd.XXXXXX")
@@ -84,16 +95,7 @@ function y
 	rm -f -- "$tmp"
 end
 
-function cat 
-	command bat $argv
-end
-function ls
-	command eza --icons $argv
-end
-
-function lt
-	command eza --icons --tree $argv
-end
+# ls/cat/lt 不再覆盖为 eza/bat，恢复系统原版
 # grub
 abbr grub 'LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 sudo grub-mkconfig -o /boot/grub/grub.cfg'
 # 小黄鸭补帧 需要steam安装正版小黄鸭
@@ -107,10 +109,6 @@ end
 function 滚
 	sysup 
 end
-function raw
-	command ~/.local/bin/random-anime-wallpaper-dms $argv
-end
-
 function 安装
 	command yay -S $argv
 end

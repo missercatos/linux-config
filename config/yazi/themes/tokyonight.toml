@@ -170,6 +170,10 @@ rules = [
     # Documents
     { mime = "application/{pdf,doc,rtf}", fg = "#a6e3a1" },
 
+    # Special files
+    { name = "*", is = "orphan", bg = "#8c1d18" },
+    { name = "*", is = "exec", fg = "#f9dedc" },
+
     # Fallback
     { url = "*", fg = "#73daca" },
     { url = "*/", fg = "#7aa2f7" },

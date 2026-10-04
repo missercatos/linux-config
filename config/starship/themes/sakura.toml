@@ -7,11 +7,11 @@ add_newline = true
 palette = 'colors'
 
 [palettes.colors]
-color_primary = '#7aa2f7'
-color_secondary = '#73daca'
-color_tertiary = '#bb9af7'
-color_error = '#f7768e'
-color_on_surface = '#c0caf5'
+color_primary = '#ff9ebb'
+color_secondary = '#ffc2d4'
+color_tertiary = '#bde0fe'
+color_error = '#ff5d8f'
+color_on_surface = '#bde0fe'
 
 [username]
 style_user = "bold fg:color_tertiary"
