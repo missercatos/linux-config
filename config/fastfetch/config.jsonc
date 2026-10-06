@@ -1,4 +1,8 @@
 {
+  "logo": {
+    "source": "/home/misser/.config/fastfetch/amya.png",
+    "height": 25
+  },
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
   "display": {
     "separator": " ",
