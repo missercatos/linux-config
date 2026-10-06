@@ -3,7 +3,7 @@ set -euo pipefail
 
 # =============================================================================
 # 功能描述: 
-#   从指定 API 获取随机壁纸，强制转换为 PNG 格式，并使用 noctalia msg设置为桌面壁纸。
+#   从指定 API 获取随机壁纸，强制转换为 PNG 格式，并使用 dms IPC 协议设置为桌面壁纸。
 # 
 # 核心特性:
 #   1. 异步下载与长耗时心跳通知。
@@ -135,9 +135,9 @@ fi
 # 转换成功，清理原始临时文件
 rm -f "$RAW_PATH"
 
-# --- 3. 应用模块 (noctalia msg) ---
+# --- 3. 应用模块 (dms ipc call) ---
 
-noctalia msg wallpaper-set "$FINAL_PATH"
+dms ipc call wallpaper set "$FINAL_PATH"
 
 # --- 4. 钩子与清理 ---
 (

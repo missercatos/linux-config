@@ -4,6 +4,6 @@
 // ! PLACE YOUR CUSTOM CONFIGURATION ELSEWHERE !
 
 layer-rule {
-    match namespace="^noctalia-overview*"
+    match namespace="dms:blurwallpaper"
     place-within-backdrop true
 }

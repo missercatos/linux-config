@@ -150,8 +150,8 @@ window-rule {
     opacity 0.90
 }
 
-// @id=noctalia-floating-windows @name=Noctalia Floating Windows
+// @id=dms-floating-windows @name=DMS Floating Windows
 window-rule {
-    match app-id="^dev\\.noctalia$"
+    match app-id="^com.danklinux.dms$"
     open-floating true
 }

@@ -19,11 +19,8 @@ environment {
     QT_QPA_PLATFORMTHEME_QT6 "gtk3"
     // 解决quickshell图标主题缺失问题
     QS_ICON_THEME "Adwaita"
-    // Wayland 会话的桌面标识（GUI 程序/portals 定位主题/服务需要）
-    XDG_CURRENT_DESKTOP "niri"
-    XDG_SESSION_TYPE "wayland"
     // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
-    GSK_RENDERER "gl"
+    //GSK_RENDERER "gl"
     // 默认文本编辑器
     EDITOR "vim"
     GTK_IM_MODULE "fcitx"
@@ -84,11 +81,10 @@ input {
     }
 }
 // 自动启动
-spawn-at-startup "noctalia"
+spawn-at-startup "dms" "run"
 // 录屏修复
 spawn-at-startup "killcry"
-spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY DBUS_SESSION_BUS_ADDRESS"
-spawn-sh-at-startup "/usr/lib/xdg-desktop-portal-gnome"
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
 spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
 // 输入法
@@ -97,9 +93,8 @@ spawn-at-startup "fcitx5"
 spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
 // 允许root通过用户的xwayland打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
-// noctalia 搜索
-// dsearch removed (DMS component)
-// spawn-at-startup "dsearch" "serve"
+// dms 搜索
+spawn-at-startup "dsearch" "serve"
 // x11<--> 剪贴板同步
 spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 
@@ -158,23 +153,22 @@ window-rule {
     match app-id="zoom"
     open-floating true
 }
-// Open noctalia windows as floating by default
+// Open dms windows as floating by default
 window-rule {
     match app-id=r#"org.quickshell$"#
     open-floating true
 }
 
-include "noctalia/binds.kdl"
-include "noctalia/alttab.kdl"
-include "noctalia/supertab.kdl"
-include "noctalia/windowrules.kdl"
-include "noctalia/cursor.kdl"
-include "noctalia/outputs.kdl"
-include "noctalia/colors.kdl"
+include "dms/binds.kdl"
+include "dms/alttab.kdl"
+include "dms/supertab.kdl"
+include "dms/windowrules.kdl"
+include "dms/cursor.kdl"
+include "dms/outputs.kdl"
+include "dms/colors.kdl"
 
 // 取消下面这行的注释启动shorin预先准备好的blur配置
 include "blur.kdl"
 
-include "noctalia/layout.kdl"
-include optional=true "noctalia/wpblur.kdl"
-
+include "dms/layout.kdl"
+include optional=true "dms/wpblur.kdl"
