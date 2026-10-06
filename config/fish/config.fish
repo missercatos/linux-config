@@ -102,6 +102,23 @@ abbr grub 'LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 sudo grub-mkconfig -o /boot/gru
 # 小黄鸭补帧 需要steam安装正版小黄鸭
 abbr lsfg 'LSFG_PROCESS="miyu"'
 
+function fastfetch
+    set -l imgs (ls ~/.config/fastfetch/*.png 2>/dev/null)
+    if test (count $imgs) -eq 0
+        command fastfetch $argv
+        return
+    end
+    set -l idx 1
+    if test -f /tmp/fa_logo_index
+        set idx (math (cat /tmp/fa_logo_index) + 1)
+        if test $idx -gt (count $imgs)
+            set idx 1
+        end
+    end
+    echo $idx > /tmp/fa_logo_index
+    command fastfetch --logo $imgs[$idx] $argv
+end
+
 # fa 运行 fastfetch：左侧随机轮换 PNG logo（伪随机，每次启动不同，循环）
 function fa
     set -l imgs (ls ~/.config/fastfetch/*.png 2>/dev/null)
