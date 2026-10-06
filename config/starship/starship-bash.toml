@@ -147,7 +147,7 @@ style = "bg:comment"
 format = '[[  $time ](fg:crust bg:comment)]($style)'
 
 [line_break]
-disabled = true
+disabled = false
 
 [character]
 disabled = false
