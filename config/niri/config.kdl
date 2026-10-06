@@ -19,8 +19,11 @@ environment {
     QT_QPA_PLATFORMTHEME_QT6 "gtk3"
     // 解决quickshell图标主题缺失问题
     QS_ICON_THEME "Adwaita"
+    // Wayland 会话的桌面标识（GUI 程序/portals 定位主题/服务需要）
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
     // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
-    //GSK_RENDERER "gl"
+    GSK_RENDERER "gl"
     // 默认文本编辑器
     EDITOR "vim"
     GTK_IM_MODULE "fcitx"
@@ -84,7 +87,8 @@ input {
 spawn-at-startup "noctalia"
 // 录屏修复
 spawn-at-startup "killcry"
-spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
+spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY DBUS_SESSION_BUS_ADDRESS"
+spawn-sh-at-startup "/usr/lib/xdg-desktop-portal-gnome"
 // GNOME tracker修复
 spawn-sh-at-startup "systemctl --user set-environment XDG_SESSION_CLASS=user"
 // 输入法
@@ -173,3 +177,4 @@ include "blur.kdl"
 
 include "noctalia/layout.kdl"
 include optional=true "noctalia/wpblur.kdl"
+

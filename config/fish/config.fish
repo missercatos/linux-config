@@ -101,8 +101,25 @@ end
 abbr grub 'LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 sudo grub-mkconfig -o /boot/grub/grub.cfg'
 # 小黄鸭补帧 需要steam安装正版小黄鸭
 abbr lsfg 'LSFG_PROCESS="miyu"'
-# fa运行fastfetch
-abbr fa fastfetch
+
+# fa 运行 fastfetch：左侧随机轮换 PNG logo（伪随机，每次启动不同，循环）
+function fa
+    set -l imgs (ls ~/.config/fastfetch/*.png 2>/dev/null)
+    if test (count $imgs) -eq 0
+        fastfetch
+        return
+    end
+    set -l idx 1
+    if test -f /tmp/fa_logo_index
+        set idx (math (cat /tmp/fa_logo_index) + 1)
+        if test $idx -gt (count $imgs)
+            set idx 1
+        end
+    end
+    echo $idx > /tmp/fa_logo_index
+    fastfetch --logo $imgs[$idx]
+end
+
 abbr reboot 'systemctl reboot'
 function sl 
 	command sl | lolcat	
@@ -119,6 +136,35 @@ function 卸载
 end 
 
 
+#终端自动开启CUDA
+set -gx CUDA_HOME /opt/cuda
+set -gx PATH $CUDA_HOME/bin $PATH
+
+#自行训练模型的模型和缓存自动导向到data目录下面
+set -gx COMFY_CLI_WORKSPACE /data/ai/comfyui
+set -gx HF_HOME /data/ai/cache/huggingface
+set -gx TORCH_HOME /data/ai/cache/torch
+set -gx OLLAMA_MODELS /data/ai/cache/ollama
+
+set -lx CUDA_HOME /opt/cuda
+set -lx LD_LIBRARY_PATH /opt/cuda/lib64 $LD_LIBRARY_PATH
+
+#默认python-agent相关的缓存和库下载导向到/data分区下面
+set -gx UV_CACHE_DIR /data/ai/cache/uv
+set -gx UV_TOOL_DIR /data/ai/uv/tools
+set -gx UV_PYTHON_INSTALL_DIR /data/ai/uv/python
+set -gx PIP_CACHE_DIR /data/ai/cache/pip
+set -gx PIP_INDEX_URL https://pypi.tuna.tsinghua.edu.cn/simple
+
+#在显示管理器因为权限问题卡死后，可以直接在TTY进入plasma环境
+if status is-interactive; and test "$XDG_VTNR" = 2; and test -z "$WAYLAND_DISPLAY"; and test -z "$DISPLAY"
+    exec dbus-run-session startplasma-wayland
+end
+
+# tty3 进入 niri 环境
+if status is-interactive; and test "$XDG_VTNR" = 3; and test -z "$WAYLAND_DISPLAY"; and test -z "$DISPLAY"
+    exec niri-session
+end
 
 # conda 已通过 /opt/miniconda3/etc/fish/conf.d/conda.fish 自动加载，无需重复初始化
 
