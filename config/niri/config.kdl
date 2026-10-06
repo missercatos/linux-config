@@ -81,7 +81,7 @@ input {
     }
 }
 // 自动启动
-spawn-at-startup "dms" "run"
+spawn-at-startup "noctalia"
 // 录屏修复
 spawn-at-startup "killcry"
 spawn-sh-at-startup "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri & /usr/lib/xdg-desktop-portal-gnome"
@@ -93,8 +93,9 @@ spawn-at-startup "fcitx5"
 spawn-at-startup "~/.config/niri/scripts/screenshot-sound.sh"
 // 允许root通过用户的xwayland打开窗口
 spawn-at-startup "xhost" "+si:localuser:root"
-// dms 搜索
-spawn-at-startup "dsearch" "serve"
+// noctalia 搜索
+// dsearch removed (DMS component)
+// spawn-at-startup "dsearch" "serve"
 // x11<--> 剪贴板同步
 spawn-at-startup "systemctl" "--user" "start" "linuxqq-clipsync"
 
@@ -153,22 +154,22 @@ window-rule {
     match app-id="zoom"
     open-floating true
 }
-// Open dms windows as floating by default
+// Open noctalia windows as floating by default
 window-rule {
     match app-id=r#"org.quickshell$"#
     open-floating true
 }
 
-include "dms/binds.kdl"
-include "dms/alttab.kdl"
-include "dms/supertab.kdl"
-include "dms/windowrules.kdl"
-include "dms/cursor.kdl"
-include "dms/outputs.kdl"
-include "dms/colors.kdl"
+include "noctalia/binds.kdl"
+include "noctalia/alttab.kdl"
+include "noctalia/supertab.kdl"
+include "noctalia/windowrules.kdl"
+include "noctalia/cursor.kdl"
+include "noctalia/outputs.kdl"
+include "noctalia/colors.kdl"
 
 // 取消下面这行的注释启动shorin预先准备好的blur配置
 include "blur.kdl"
 
-include "dms/layout.kdl"
-include optional=true "dms/wpblur.kdl"
+include "noctalia/layout.kdl"
+include optional=true "noctalia/wpblur.kdl"

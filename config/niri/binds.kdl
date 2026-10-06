@@ -9,7 +9,7 @@ binds {
     Mod+Shift+Slash hotkey-overlay-title="快捷键教程 Keybind tutorial" { spawn "~/.config/niri/scripts/niri-binds"; }
 
     Mod+F1 hotkey-overlay-title="开关输入法 Toggle fcitx" {spawn-sh "pkill fcitx5 || fcitx5 ";}
-    Mod+F2 hotkey-overlay-title="设置 Settings" { spawn-sh "dms ipc call settings focusOrToggle";}
+    Mod+F2 hotkey-overlay-title="设置 Settings" { spawn-sh "noctalia msg settings-toggle";}
     Mod+F3 hotkey-overlay-title="高质量录屏 High-quality record" { spawn "~/.local/bin/wf-recorder-high";}
     Mod+F5 hotkey-overlay-title="快速存档 Quick save" {spawn "quicksave";}
     Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
@@ -30,11 +30,11 @@ binds {
     Mod+E hotkey-overlay-title="文档管理器 Filemanager" { spawn-sh "thunar || env GSK_RENDERER=gl nautilus --new-window"; }
     // 另一个打开nautilus的快捷键，主要是为了在同时安装thunar和nautilus的情况下打开naultilus
     Mod+Alt+E hotkey-overlay-title=null {spawn "env" "GSK_RENDERER=gl" "nautilus" "--new-window";}
-    Mod+Z hotkey-overlay-title="程序菜单 Applauncher" { spawn-sh "dms ipc call spotlight toggle || fuzzel"; }
-    // dms 壁纸选择
-    Mod+Alt+W hotkey-overlay-title="壁纸切换 Wallpaper" { spawn "dms" "ipc" "call" "dankdash" "wallpaper";}
+    Mod+Z hotkey-overlay-title="程序菜单 Applauncher" { spawn-sh "noctalia msg launcher toggle || fuzzel"; }
+    // noctalia 壁纸选择
+    Mod+Alt+W hotkey-overlay-title="壁纸切换 Wallpaper" { spawn "noctalia" "msg" "wallpaper" "open";}
     // 随机下载壁纸
-    Mod+Shift+F10 hotkey-overlay-title="随机下载壁纸 Random wallpaper" { spawn "~/.local/bin/random-anime-wallpaper-dms";}
+    Mod+Shift+F10 hotkey-overlay-title="随机下载壁纸 Random wallpaper" { spawn "~/.local/bin/random-anime-wallpaper-noctalia";}
 
     Mod+O hotkey-overlay-title="切换总览界面 toggle overview" repeat=false { toggle-overview; }
     // 关闭聚焦窗口
@@ -230,37 +230,37 @@ binds {
     
     // === DMS 特有组件 ===
     // 电源菜单 (Super+X)
-    Super+X hotkey-overlay-title="Power Menu: Toggle" { spawn "dms" "ipc" "call" "powermenu" "toggle"; }
+    Super+X hotkey-overlay-title="Power Menu: Toggle" { spawn "noctalia" "msg" "session" "power-menu" "toggle"; }
     // 壁纸选择器 (Mod+Y，作为 Mod+Alt+W 的备用)
-    Mod+Y hotkey-overlay-title="Browse Wallpapers" { spawn "dms" "ipc" "call" "dankdash" "wallpaper"; }
+    Mod+Y hotkey-overlay-title="Browse Wallpapers" { spawn "noctalia" "msg" "wallpaper" "open"; }
     // 剪贴板
-    Mod+Alt+V hotkey-overlay-title="剪贴板 Clipboard" {spawn "dms" "ipc" "call" "clipboard" "toggle";} 
+    Mod+Alt+V hotkey-overlay-title="剪贴板 Clipboard" {spawn "noctalia" "msg" "clipboard" "toggle";} 
     // 记事本
-    Mod+Shift+N hotkey-overlay-title="记事本 Notepad" { spawn "dms" "ipc" "call" "notepad" "toggle"; }
+    Mod+Shift+N hotkey-overlay-title="记事本 Notepad" { spawn "noctalia" "msg" "notepad" "toggle"; }
     // 锁屏
-    Mod+Alt+L hotkey-overlay-title="锁屏 Lock Screen" { spawn "dms" "ipc" "call" "lock" "lock"; }
+    Mod+Alt+L hotkey-overlay-title="锁屏 Lock Screen" { spawn "noctalia" "msg" "session" "lock"; }
     // 锁屏、关闭显示器、休眠
-    Mod+Alt+P hotkey-overlay-title="挂起 Suspend" { spawn-sh "niri msg action power-off-monitors && dms ipc call lock lock && systemctl suspend";}
+    Mod+Alt+P hotkey-overlay-title="挂起 Suspend" { spawn-sh "niri msg action power-off-monitors && noctalia msg session lock && systemctl suspend";}
     // Ctrl+Alt+Del 呼出任务管理器
-    Ctrl+Alt+Delete hotkey-overlay-title="任务管理器 Task Manager" { spawn "dms" "ipc" "call" "processlist" "focusOrToggle"; }
+    Ctrl+Alt+Delete hotkey-overlay-title="任务管理器 Task Manager" { spawn "noctalia" "msg" "processlist" "toggle"; }
     // 创建窗口规则 (Mod+Shift+W)
-    Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "dms" "ipc" "call" "window-rules" "toggle"; }
+    Mod+Shift+W hotkey-overlay-title="Create window rule" { spawn "noctalia" "msg" "window-rules" "toggle"; }
 
     // === 媒体控制 ===
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "increment" "3"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "decrement" "3"; }
-    XF86AudioMute allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "mute"; }
-    XF86AudioMicMute allow-when-locked=true { spawn "dms" "ipc" "call" "audio" "micmute"; }
-    XF86AudioPause allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-    XF86AudioPlay allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "playPause"; }
-    XF86AudioPrev allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "previous"; }
-    XF86AudioNext allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "next"; }
-    Ctrl+XF86AudioRaiseVolume allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "increment" "3"; }
-    Ctrl+XF86AudioLowerVolume allow-when-locked=true { spawn "dms" "ipc" "call" "mpris" "decrement" "3"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume" "increase" "3"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume" "decrease" "3"; }
+    XF86AudioMute allow-when-locked=true { spawn "noctalia" "msg" "volume" "muteOutput"; }
+    XF86AudioMicMute allow-when-locked=true { spawn "noctalia" "msg" "volume" "muteInput"; }
+    XF86AudioPause allow-when-locked=true { spawn "noctalia" "msg" "media" "play-pause"; }
+    XF86AudioPlay allow-when-locked=true { spawn "noctalia" "msg" "media" "play-pause"; }
+    XF86AudioPrev allow-when-locked=true { spawn "noctalia" "msg" "media" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "noctalia" "msg" "media" "next"; }
+    Ctrl+XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume" "increase" "3"; }
+    Ctrl+XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume" "decrease" "3"; }
 
     // === 亮度控制 ===
-    XF86MonBrightnessUp allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "increment" "5" ""; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "dms" "ipc" "call" "brightness" "decrement" "5" ""; }
+    XF86MonBrightnessUp allow-when-locked=true { spawn "noctalia" "msg" "brightness" "increase" "5"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness" "decrease" "5"; }
 
     // === 工作区导航补充 (无冲突项) ===
     Mod+Page_Down          { focus-workspace-down; }
@@ -277,7 +277,7 @@ binds {
     Mod+Shift+I            { move-workspace-up; }
 
     // 重命名工作区
-    Ctrl+Shift+R hotkey-overlay-title="Rename Workspace" { spawn "dms" "ipc" "call" "workspace-rename" "open"; }
+    Ctrl+Shift+R hotkey-overlay-title="Rename Workspace" { spawn "noctalia" "msg" "workspace-rename" "open"; }
 
     // === 数字工作区 (1-9) ===
     Mod+1 { focus-workspace 1; }
