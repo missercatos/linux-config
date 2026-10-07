@@ -3,8 +3,8 @@
   "barElevationEnabled": false,
   "blurEnabled": true,
   "blurredWallpaperLayer": true,
-  "greeterShowWeather": false,
-  "weatherEnabled": false,
+  "blurWallpaperOnOverview": true,
+  "appleMusicAnimatedArtEnabled": true,
   "launcherLogoMode": "os",
   "notificationSummaryFontSize": 12,
   "notificationBodyFontSize": 10,
@@ -12,7 +12,8 @@
   "dockSmartAutoHide": true,
   "dockUseOverlayLayer": true,
   "dockLauncherEnabled": true,
-  "lockScreenShowWeather": false,
+  "lockScreenVideoEnabled": true,
+  "lockScreenVideoCycling": true,
   "notificationTimeoutLow": 1000,
   "notificationTimeoutNormal": 1000,
   "notificationTimeoutCritical": 3000,
@@ -37,7 +38,8 @@
       ],
       "centerWidgets": [
         "music",
-        "clock"
+        "clock",
+        "weather"
       ],
       "rightWidgets": [
         "systemTray",
