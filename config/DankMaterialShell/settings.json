@@ -1,6 +1,9 @@
 {
+  "currentThemeName": "custom",
   "currentThemeCategory": "registry",
+  "customThemeFile": "/home/misser/.config/DankMaterialShell/themes/tokyoNight/theme.json",
   "popupTransparency": 0.55,
+  "dockTransparency": 0,
   "barElevationEnabled": false,
   "blurEnabled": true,
   "blurredWallpaperLayer": true,
@@ -102,6 +105,60 @@
     "hslLightness": 1,
     "valid": true
   },
+  "desktopWidgetInstances": [
+    {
+      "id": "dw_1791341724607_lolecbbh3",
+      "widgetType": "systemMonitor",
+      "name": "系统监视器",
+      "enabled": false,
+      "config": {
+        "showHeader": true,
+        "transparency": 0.8,
+        "colorMode": "primary",
+        "customColor": "#ffffff",
+        "showCpu": true,
+        "showCpuGraph": true,
+        "showCpuTemp": true,
+        "showGpuTemp": false,
+        "gpuPciId": "",
+        "showMemory": true,
+        "showMemoryGraph": true,
+        "showNetwork": true,
+        "showNetworkGraph": true,
+        "showDisk": true,
+        "showTopProcesses": false,
+        "topProcessCount": 3,
+        "topProcessSortBy": "cpu",
+        "layoutMode": "auto",
+        "graphInterval": 60,
+        "displayPreferences": [
+          "all"
+        ]
+      }
+    },
+    {
+      "id": "dw_1791342164394_p4ireeg4m",
+      "widgetType": "theGrove",
+      "name": "theGrove",
+      "enabled": true,
+      "config": {
+        "displayPreferences": [
+          "all"
+        ]
+      }
+    },
+    {
+      "id": "dw_1791342193835_9nd6irg29",
+      "widgetType": "modernClock",
+      "name": "Modern Clock",
+      "enabled": true,
+      "config": {
+        "displayPreferences": [
+          "all"
+        ]
+      }
+    }
+  ],
   "builtInPluginSettings": {
     "dms_settings_search": {
       "trigger": "?"
@@ -116,5 +173,6 @@
       "trigger": "qrg"
     }
   },
+  "frameBlurEnabled": false,
   "configVersion": 18
 }
