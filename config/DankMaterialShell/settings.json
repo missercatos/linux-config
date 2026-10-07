@@ -1,0 +1,115 @@
+{
+  "currentThemeCategory": "registry",
+  "barElevationEnabled": false,
+  "blurEnabled": true,
+  "blurredWallpaperLayer": true,
+  "blurWallpaperOnOverview": true,
+  "launcherLogoMode": "os",
+  "notificationSummaryFontSize": 12,
+  "notificationBodyFontSize": 10,
+  "showDock": true,
+  "dockSmartAutoHide": true,
+  "dockUseOverlayLayer": true,
+  "dockLauncherEnabled": true,
+  "notificationTimeoutLow": 1000,
+  "notificationTimeoutNormal": 1000,
+  "notificationTimeoutCritical": 3000,
+  "notificationIgnoreAppTimeout": true,
+  "notificationCompactMode": true,
+  "barConfigs": [
+    {
+      "id": "default",
+      "name": "Main Bar",
+      "enabled": true,
+      "position": 0,
+      "screenPreferences": [
+        "all"
+      ],
+      "showOnLastDisplay": true,
+      "leftWidgets": [
+        "launcherButton",
+        "workspaceSwitcher",
+        "focusedWindow"
+      ],
+      "centerWidgets": [
+        "music",
+        "clock",
+        "weather"
+      ],
+      "rightWidgets": [
+        "systemTray",
+        "clipboard",
+        "cpuUsage",
+        "memUsage",
+        "notificationButton",
+        "battery",
+        "controlCenterButton"
+      ],
+      "spacing": 4,
+      "innerPadding": 4,
+      "bottomGap": 0,
+      "transparency": 0,
+      "widgetTransparency": 0.26,
+      "squareCorners": false,
+      "noBackground": false,
+      "gothCornersEnabled": false,
+      "gothCornerRadiusOverride": false,
+      "gothCornerRadiusValue": 12,
+      "borderEnabled": false,
+      "borderColor": "surfaceText",
+      "borderOpacity": 1,
+      "borderThickness": 1,
+      "fontScale": 1,
+      "autoHide": true,
+      "autoHideDelay": 250,
+      "openOnOverview": false,
+      "visible": true,
+      "popupGapsAuto": true,
+      "popupGapsManual": 4,
+      "autoHideStrict": true,
+      "showOnWindowsOpen": true,
+      "island": false
+    }
+  ],
+  "desktopClockCustomColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1,
+    "hsvHue": -1,
+    "hsvSaturation": 0,
+    "hsvValue": 1,
+    "hslHue": -1,
+    "hslSaturation": 0,
+    "hslLightness": 1,
+    "valid": true
+  },
+  "systemMonitorCustomColor": {
+    "r": 1,
+    "g": 1,
+    "b": 1,
+    "a": 1,
+    "hsvHue": -1,
+    "hsvSaturation": 0,
+    "hsvValue": 1,
+    "hslHue": -1,
+    "hslSaturation": 0,
+    "hslLightness": 1,
+    "valid": true
+  },
+  "builtInPluginSettings": {
+    "dms_settings_search": {
+      "trigger": "?"
+    },
+    "dms_clipboard_search": {
+      "trigger": "cb"
+    },
+    "dms_power": {
+      "trigger": "pw"
+    },
+    "dms_qr_generator": {
+      "trigger": "qrg"
+    }
+  },
+  "configVersion": 18
+}
