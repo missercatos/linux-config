@@ -1,0 +1,70 @@
+#!/usr/bin/env python3
+# fa — fastfetch with a rotating PNG "logo" rendered via chafa (works in any terminal)
+import os, sys, glob, re, subprocess
+
+HOME = os.path.expanduser("~")
+IMG_DIR = os.path.join(HOME, ".config", "fastfetch")
+IDX_FILE = "/tmp/fa_logo_index"
+CHAFA = os.path.join(HOME, ".local", "bin", "chafa")
+FASTFETCH = "/usr/bin/fastfetch"
+
+ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+
+def visible_len(s):
+    return len(ANSI.sub("", s))
+
+def main():
+    args = sys.argv[1:]
+    imgs = sorted(glob.glob(os.path.join(IMG_DIR, "*.png")))
+    if not imgs:
+        os.execv(FASTFETCH, [FASTFETCH] + args)
+    idx = 0
+    try:
+        idx = int(open(IDX_FILE).read().strip())
+    except Exception:
+        idx = 0
+    if idx >= len(imgs):
+        idx = 0
+    img = imgs[idx]
+    try:
+        open(IDX_FILE, "w").write(str((idx + 1) % len(imgs)))
+    except Exception:
+        pass
+
+    # info panel without the built-in logo
+    info = subprocess.run([FASTFETCH, "--logo", "none"] + args,
+                          capture_output=True, text=True).stdout
+    info_lines = info.split("\n")
+    while info_lines and info_lines[-1] == "":
+        info_lines.pop()
+    # drop leading blank lines
+    while info_lines and info_lines[0].strip() == "":
+        info_lines.pop(0)
+    n = len(info_lines)
+
+    # render the image to roughly n rows tall (terminal cells ~2:1)
+    h = max(10, n)
+    w = max(20, h * 2)
+    try:
+        art = subprocess.run(
+            [CHAFA, "--format", "symbols", "--symbols", "block+border+space",
+             "--fg-only", "--size", f"{w}x{h}", "--", img],
+            capture_output=True, text=True).stdout
+    except Exception:
+        art = ""
+    # strip chafa cursor control prefix/suffix chars
+    art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
+    art_lines = [l.rstrip("\x1b[39m").rstrip() for l in art.rstrip("\n").split("\n")]
+
+    rows = max(len(art_lines), n)
+    width = max((visible_len(l) for l in art_lines), default=0)
+    out = []
+    for i in range(rows):
+        a = art_lines[i] if i < len(art_lines) else ""
+        pad = " " * max(0, width - visible_len(a))
+        b = info_lines[i] if i < len(info_lines) else ""
+        out.append(a + pad + "  " + b)
+    sys.stdout.write("\n".join(out) + "\n")
+
+if __name__ == "__main__":
+    main()
