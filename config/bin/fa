@@ -3,19 +3,22 @@
 #  - kitty: draws the real PNG via chafa's kitty graphics protocol.
 #  - other: colored chafa approximation.
 #  The info colors are derived from the PNG's own dominant colors (gradient).
-import os, sys, glob, re, subprocess, colorsys, shutil
+#
+#  Performance: palettes and rendered kitty image data are cached under
+#  ~/.cache/fa, and palette extraction runs in parallel with fastfetch.
+import os, sys, glob, re, subprocess, colorsys, hashlib, json, threading, shutil
 
 HOME = os.path.expanduser("~")
 IMG_DIR = os.path.join(HOME, ".config", "fastfetch")
 IDX_FILE = "/tmp/fa_logo_index"
+CACHE = os.path.join(HOME, ".cache", "fa")
 CHAFA = "/usr/bin/chafa" if os.path.exists("/usr/bin/chafa") else os.path.join(HOME, ".local", "bin", "chafa")
 MAGICK = "/usr/bin/magick" if os.path.exists("/usr/bin/magick") else "/usr/bin/convert"
 FASTFETCH = "/usr/bin/fastfetch"
 RESET = "\x1b[0m"
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
-FALLBACK = ["\x1b[38;2;122;162;247m", "\x1b[38;2;115;218;202m",
-            "\x1b[38;2;187;154;247m", "\x1b[38;2;158;206;106m"]
+FALLBACK = [(122, 162, 247), (115, 218, 202), (187, 154, 247), (158, 206, 106)]
 
 def vlen(s):
     return len(ANSI.sub("", s))
@@ -25,6 +28,32 @@ def strip_ansi(s):
 
 def run(cmd):
     return subprocess.run(cmd, capture_output=True, text=True).stdout
+
+def _key(*parts):
+    h = hashlib.sha1()
+    for p in parts:
+        h.update(str(p).encode())
+        h.update(b"\0")
+    return h.hexdigest()[:16]
+
+def _img_sig(path):
+    st = os.stat(path)
+    return (os.path.abspath(path), int(st.st_mtime), st.st_size)
+
+def _cached(path, sub):
+    try:
+        with open(path, "rb") as f:
+            return f.read()
+    except Exception:
+        return None
+
+def _store(path, data):
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(data)
+    except Exception:
+        pass
 
 def pick_image():
     imgs = sorted(glob.glob(os.path.join(IMG_DIR, "*.png")))
@@ -42,9 +71,9 @@ def pick_image():
         pass
     return imgs[idx]
 
-def image_colors(path, count=6):
-    """Extract dominant colors, nudged to a readable lightness/saturation."""
-    out = run([MAGICK, path, "-resize", "60x60", "-colors", str(count),
+def compute_palette(path, count=6):
+    """Extract dominant colors (fast sample) and nudge them to be readable."""
+    out = run([MAGICK, path, "-sample", "24x24", "-colors", str(count),
                "-unique-colors", "-depth", "8", "txt:-"])
     hexes = []
     for c in re.findall(r"#([0-9A-Fa-f]{6})", out):
@@ -54,14 +83,25 @@ def image_colors(path, count=6):
     for c in hexes:
         r, g, b = int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
         h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
-        s = max(s, 0.45)                 # keep it colorful
-        v = min(max(v, 0.72), 0.96)      # keep it readable on dark terminals
+        s = max(s, 0.45)
+        v = min(max(v, 0.72), 0.96)
         r, g, b = colorsys.hsv_to_rgb(h, s, v)
         rgbs.append((int(r * 255), int(g * 255), int(b * 255)))
     return rgbs or [(122, 162, 247)]
 
+def get_palette(path):
+    f = os.path.join(CACHE, "palette", _key(*_img_sig(path)) + ".json")
+    data = _cached(f, None)
+    if data:
+        try:
+            return [tuple(c) for c in json.loads(data.decode())]
+        except Exception:
+            pass
+    rgbs = compute_palette(path)
+    _store(f, json.dumps([list(c) for c in rgbs]).encode())
+    return rgbs
+
 def gradient_palette(rgbs, n):
-    """n ANSI colors sampled as a smooth gradient through the given colors."""
     m = len(rgbs)
     out = []
     for i in range(n):
@@ -85,9 +125,42 @@ def chafa_kitty(path, w, h):
     art = re.sub(r"(?:\x1b\[[0-9;]*t|\x1b\[[0-9;]*c)+", "", art, count=1)
     return art.rstrip("\n")
 
+def get_kitty(path, w, h):
+    f = os.path.join(CACHE, "kitty", _key(*_img_sig(path), w, h) + ".bin")
+    data = _cached(f, None)
+    if data is not None:
+        return data
+    art = chafa_kitty(path, w, h).encode("latin1")
+    _store(f, art)
+    return art
+
+def warm():
+    imgs = sorted(glob.glob(os.path.join(IMG_DIR, "*.png")))
+    term = shutil.get_terminal_size((100, 40))
+    n_pred = max(1, len(run([FASTFETCH, "--logo", "none"]).split("\n")) - 1)
+    h = max(10, min(n_pred, 28))
+    w = h * 2
+    for img in imgs:
+        t = threading.Thread(target=get_palette, args=(img,))
+        t.start(); t.join()
+        get_kitty(img, w, h)
+        print("cached:", os.path.basename(img))
+    print("warm cache: %d images -> %s" % (len(imgs), CACHE))
+
 def main():
     args = sys.argv[1:]
+    if "--warm" in args:
+        warm()
+        return
+    args = [a for a in args if a != "--warm"]
+
     img = pick_image()
+
+    # start palette extraction in parallel with fastfetch
+    pal_thread = None
+    if img:
+        pal_thread = threading.Thread(target=get_palette, args=(img,))
+        pal_thread.start()
 
     info = run([FASTFETCH, "--logo", "none"] + args)
     lines = info.split("\n")
@@ -97,10 +170,13 @@ def main():
         lines.pop(0)
     n = max(1, len(lines))
 
+    if pal_thread:
+        pal_thread.join()
     if img:
-        palette = gradient_palette(image_colors(img), n)
+        rgbs = get_palette(img)   # cache hit -> instant
+        palette = gradient_palette(rgbs, n)
     else:
-        palette = [FALLBACK[i % len(FALLBACK)] for i in range(n)]
+        palette = ["\x1b[38;2;%d;%d;%dm" % FALLBACK[i % len(FALLBACK)] for i in range(n)]
     lines = [palette[i] + strip_ansi(l) + RESET for i, l in enumerate(lines)]
 
     if not img:
@@ -108,14 +184,13 @@ def main():
         return
 
     term = shutil.get_terminal_size((100, 40))
-    tcols, trows = term.columns, term.lines
+    tcols = term.columns
     info_w = max((vlen(l) for l in lines), default=40) + 4
 
-    # image height: 1.4x the original base (kept modest so it doesn't look huge)
     h = max(10, min(n, 28))
     w = h * 2
     max_w = max(16, tcols - info_w)
-    if w > max_w:              # don't collide with the info text
+    if w > max_w:
         w = max_w
         h = max(10, w // 2)
 
@@ -127,13 +202,13 @@ def main():
             if i != len(lines) - 1:
                 sys.stdout.write("\r\n")
         sys.stdout.write("\r\n")
-        sys.stdout.write(f"\x1b[{n}A\r")      # back to the first info row
-        sys.stdout.write(chafa_kitty(img, w, h))
-        # kitty advances the cursor past the image, so the cursor is now right
-        # below the block; only add the remaining rows if the image is shorter.
+        sys.stdout.write(f"\x1b[{n}A\r")
+        sys.stdout.flush()
+        sys.stdout.buffer.write(get_kitty(img, w, h))
         if n > h:
             sys.stdout.write(f"\x1b[{n - h}B")
         sys.stdout.write("\r")
+        sys.stdout.buffer.flush()
         return
 
     art = run([CHAFA, "--format", "symbols", "--symbols", "block+border+space",
