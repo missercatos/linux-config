@@ -40,15 +40,6 @@ window-rule {
         blur true
     }
 }
-// DMS 弹窗/组件：只模糊弹窗本体。
-// 注意：只匹配单段命名空间（不带 :background），并且不包含
-// dms:blurwallpaper（总览壁纸）和 dms:niri-overview-spotlight（总览启动器），
-// 这样 mod+O 总览以及全屏背景层都不会被影响。
-layer-rule {
-    match namespace="^dms:(dash|control-center|spotlight|spotlight-bar|notification-center-modal|power-menu|system-updater|processlist|notepad|keybinds|keybinds-modal|window-rules|workspace-rename|widget|welcome|file|mux|tmux|wallpaper|profile|sessions|outputs|night|brightness|color-picker|theme|clipboard|tray|toast|settings|plugins|audio|bluetooth|network|power-profile|display|screenshot)$"
-    background-effect {
-        xray true
-        blur true
-    }
-}
+// DMS 弹窗：只透明，不模糊（避免打开/关闭时的全屏糊闪与残影）。
+// 透明度由 DMS 的 popupTransparency 控制。
 // --- NIRI BLUR END ---
