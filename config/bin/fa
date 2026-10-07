@@ -78,8 +78,8 @@ def main():
     lines = colorize(lines)
 
     # image cell size: match info height but cap so it doesn't take too much space
-    h = max(8, min(n, 20))
-    w = h * 2  # terminal cells are ~2:1 for a square image
+    h = max(8, min(n, 30))          # image height (1.5x of the previous 20-row cap)
+    w = h * 2                        # terminal cells are ~2:1 for a square image
 
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
 
