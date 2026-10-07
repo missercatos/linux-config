@@ -1,9 +1,9 @@
 {
   "currentThemeCategory": "registry",
+  "popupTransparency": 0.55,
   "barElevationEnabled": false,
   "blurEnabled": true,
   "blurredWallpaperLayer": true,
-  "blurWallpaperOnOverview": true,
   "appleMusicAnimatedArtEnabled": true,
   "launcherLogoMode": "os",
   "notificationSummaryFontSize": 12,
