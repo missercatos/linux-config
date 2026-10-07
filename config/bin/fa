@@ -111,8 +111,8 @@ def main():
     tcols, trows = term.columns, term.lines
     info_w = max((vlen(l) for l in lines), default=40) + 4
 
-    # image fills the full info height (no empty column beside it)
-    h = max(10, n)
+    # image height: 1.4x the original base (kept modest so it doesn't look huge)
+    h = max(10, min(n, 28))
     w = h * 2
     max_w = max(16, tcols - info_w)
     if w > max_w:              # don't collide with the info text
@@ -129,7 +129,11 @@ def main():
         sys.stdout.write("\r\n")
         sys.stdout.write(f"\x1b[{n}A\r")      # back to the first info row
         sys.stdout.write(chafa_kitty(img, w, h))
-        sys.stdout.write(f"\x1b[{n}B\r")      # park below the block
+        # kitty advances the cursor past the image, so the cursor is now right
+        # below the block; only add the remaining rows if the image is shorter.
+        if n > h:
+            sys.stdout.write(f"\x1b[{n - h}B")
+        sys.stdout.write("\r")
         return
 
     art = run([CHAFA, "--format", "symbols", "--symbols", "block+border+space",
