@@ -47,7 +47,7 @@ window-rule {
 layer-rule {
     match namespace="^dms:(dash|control-center|spotlight|spotlight-bar|notification-center-modal|power-menu|system-updater|processlist|notepad|keybinds|keybinds-modal|window-rules|workspace-rename|widget|welcome|file|mux|tmux|wallpaper|profile|sessions|outputs|night|brightness|color-picker|theme|clipboard|tray|toast|settings|plugins|audio|bluetooth|network|power-profile|display|screenshot)$"
     background-effect {
-        xray false
+        xray true
         blur true
     }
 }
