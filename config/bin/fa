@@ -1,36 +1,21 @@
 #!/usr/bin/env python3
-# fa — fastfetch with a rotating PNG image on the left and rainbow info on the right.
-#  In kitty: renders the real PNG via chafa's kitty graphics protocol.
-#  Otherwise: renders a colored chafa approximation.
-#
-# Layout strategy (kitty): print the info block first (with a left margin the
-# width of the image), then move the cursor back up and draw the image into that
-# empty margin. Drawing the image last means no text printing can scroll/shift
-# it, so the image and the info are reliably side by side.
-import os, sys, glob, re, subprocess
+# fa — fastfetch with a rotating PNG on the left and rainbow info on the right.
+#  - kitty: draws the real PNG via chafa's kitty graphics protocol.
+#  - other: colored chafa approximation.
+#  The info colors are derived from the PNG's own dominant colors (gradient).
+import os, sys, glob, re, subprocess, colorsys, shutil
 
 HOME = os.path.expanduser("~")
 IMG_DIR = os.path.join(HOME, ".config", "fastfetch")
 IDX_FILE = "/tmp/fa_logo_index"
 CHAFA = "/usr/bin/chafa" if os.path.exists("/usr/bin/chafa") else os.path.join(HOME, ".local", "bin", "chafa")
+MAGICK = "/usr/bin/magick" if os.path.exists("/usr/bin/magick") else "/usr/bin/convert"
 FASTFETCH = "/usr/bin/fastfetch"
 RESET = "\x1b[0m"
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
-PALETTE = [
-    "\x1b[38;2;122;162;247m",  # blue
-    "\x1b[38;2;115;218;202m",  # teal
-    "\x1b[38;2;187;154;247m",  # purple
-    "\x1b[38;2;125;207;255m",  # cyan
-    "\x1b[38;2;158;206;106m",  # green
-    "\x1b[38;2;224;175;104m",  # orange
-    "\x1b[38;2;247;118;142m",  # red
-    "\x1b[38;2;255;199;119m",  # yellow
-    "\x1b[38;2;187;154;247m",  # lavender
-    "\x1b[38;2;115;218;202m",  # aqua
-    "\x1b[38;2;122;162;247m",  # blue
-    "\x1b[38;2;158;206;106m",  # green
-]
+FALLBACK = ["\x1b[38;2;122;162;247m", "\x1b[38;2;115;218;202m",
+            "\x1b[38;2;187;154;247m", "\x1b[38;2;158;206;106m"]
 
 def vlen(s):
     return len(ANSI.sub("", s))
@@ -57,14 +42,46 @@ def pick_image():
         pass
     return imgs[idx]
 
-def colorize(lines):
-    return [PALETTE[i % len(PALETTE)] + strip_ansi(l) + RESET for i, l in enumerate(lines)]
+def image_colors(path, count=6):
+    """Extract dominant colors, nudged to a readable lightness/saturation."""
+    out = run([MAGICK, path, "-resize", "60x60", "-colors", str(count),
+               "-unique-colors", "-depth", "8", "txt:-"])
+    hexes = []
+    for c in re.findall(r"#([0-9A-Fa-f]{6})", out):
+        if c not in hexes:
+            hexes.append(c)
+    rgbs = []
+    for c in hexes:
+        r, g, b = int(c[0:2], 16), int(c[2:4], 16), int(c[4:6], 16)
+        h, s, v = colorsys.rgb_to_hsv(r / 255, g / 255, b / 255)
+        s = max(s, 0.45)                 # keep it colorful
+        v = min(max(v, 0.72), 0.96)      # keep it readable on dark terminals
+        r, g, b = colorsys.hsv_to_rgb(h, s, v)
+        rgbs.append((int(r * 255), int(g * 255), int(b * 255)))
+    return rgbs or [(122, 162, 247)]
+
+def gradient_palette(rgbs, n):
+    """n ANSI colors sampled as a smooth gradient through the given colors."""
+    m = len(rgbs)
+    out = []
+    for i in range(n):
+        t = i / (n - 1) if n > 1 else 0.0
+        if m == 1:
+            col = rgbs[0]
+        else:
+            pos = t * (m - 1)
+            j = min(int(pos), m - 2)
+            f = pos - j
+            a, b = rgbs[j], rgbs[j + 1]
+            col = (int(a[0] + (b[0] - a[0]) * f),
+                   int(a[1] + (b[1] - a[1]) * f),
+                   int(a[2] + (b[2] - a[2]) * f))
+        out.append("\x1b[38;2;%d;%d;%dm" % col)
+    return out
 
 def chafa_kitty(path, w, h):
     art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", path])
     art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
-    # drop terminal capability queries chafa sends at the start (they are no
-    # longer useful once the output is replayed and can confuse the terminal)
     art = re.sub(r"(?:\x1b\[[0-9;]*t|\x1b\[[0-9;]*c)+", "", art, count=1)
     return art.rstrip("\n")
 
@@ -79,33 +96,42 @@ def main():
     while lines and lines[0].strip() == "":
         lines.pop(0)
     n = max(1, len(lines))
-    lines = colorize(lines)
+
+    if img:
+        palette = gradient_palette(image_colors(img), n)
+    else:
+        palette = [FALLBACK[i % len(FALLBACK)] for i in range(n)]
+    lines = [palette[i] + strip_ansi(l) + RESET for i, l in enumerate(lines)]
 
     if not img:
         sys.stdout.write("\n".join(lines) + "\n")
         return
 
-    # image height = 1.4x the earlier 20-row base
-    h = max(8, min(n, 28))
-    w = h * 2  # terminal cells are ~2:1 for a square image
+    term = shutil.get_terminal_size((100, 40))
+    tcols, trows = term.columns, term.lines
+    info_w = max((vlen(l) for l in lines), default=40) + 4
+
+    # image fills the full info height (no empty column beside it)
+    h = max(10, n)
+    w = h * 2
+    max_w = max(16, tcols - info_w)
+    if w > max_w:              # don't collide with the info text
+        w = max_w
+        h = max(10, w // 2)
 
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
 
     if is_kitty:
-        # 1) print the info block with a left margin of w columns
         for i, line in enumerate(lines):
             sys.stdout.write(f"\x1b[{w}C" + line)
             if i != len(lines) - 1:
                 sys.stdout.write("\r\n")
         sys.stdout.write("\r\n")
-        # 2) jump back to the first info row, column 0 and draw the image there
-        sys.stdout.write(f"\x1b[{n}A\r")
+        sys.stdout.write(f"\x1b[{n}A\r")      # back to the first info row
         sys.stdout.write(chafa_kitty(img, w, h))
-        # 3) leave the cursor just below the whole block
-        sys.stdout.write(f"\x1b[{n}B\r")
+        sys.stdout.write(f"\x1b[{n}B\r")      # park below the block
         return
 
-    # fallback: colored character-cell rendering (also fine in plain TTY)
     art = run([CHAFA, "--format", "symbols", "--symbols", "block+border+space",
                "--fg-only", "--size", f"{w}x{h}", "--", img])
     art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
