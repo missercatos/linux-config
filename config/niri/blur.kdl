@@ -1,8 +1,8 @@
 // --- NIRI BLUR START ---
 // 顶层的blur配置，细节调整blur的效果
 blur {
-    passes 3
-    offset 3
+    passes 2
+    offset 2
     noise 0.02
     saturation 1.5
 }
