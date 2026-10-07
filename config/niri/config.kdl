@@ -21,6 +21,9 @@ environment {
     QS_ICON_THEME "Adwaita"
     XDG_CURRENT_DESKTOP "niri"
     XDG_SESSION_TYPE "wayland"
+    // 光标主题（X11 应用也生效）
+    XCURSOR_THEME "oreo_blue_cursors"
+    XCURSOR_SIZE "32"
     // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
     GSK_RENDERER "gl"
     // 默认文本编辑器
@@ -33,6 +36,15 @@ environment {
     
 }
 spawn-at-startup "fcitx5" "-d" "--replace"
+
+
+// 鼠标光标：使用 KDE 的 oreo_blue_cursors 主题；空闲 1 秒后隐藏，移动时显示
+cursor {
+    xcursor-theme "oreo_blue_cursors"
+    xcursor-size 32
+    hide-when-typing
+    hide-after-inactive-ms 1000
+}
 
 input {
     keyboard {

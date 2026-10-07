@@ -8,6 +8,25 @@
   "blurEnabled": true,
   "blurredWallpaperLayer": true,
   "appleMusicAnimatedArtEnabled": true,
+  "cursorSettings": {
+    "theme": "oreo_blue_cursors",
+    "size": 32,
+    "niri": {
+      "hideWhenTyping": true,
+      "hideAfterInactiveMs": 1000
+    },
+    "hyprland": {
+      "hideOnKeyPress": false,
+      "hideOnTouch": false,
+      "inactiveTimeout": 0
+    },
+    "dwl": {
+      "cursorHideTimeout": 0
+    },
+    "mango": {
+      "cursorHideTimeout": 0
+    }
+  },
   "launcherLogoMode": "os",
   "notificationSummaryFontSize": 12,
   "notificationBodyFontSize": 10,
