@@ -2,6 +2,11 @@
 # fa — fastfetch with a rotating PNG image on the left and rainbow info on the right.
 #  In kitty: renders the real PNG via chafa's kitty graphics protocol.
 #  Otherwise: renders a colored chafa approximation.
+#
+# Layout strategy (kitty): print the info block first (with a left margin the
+# width of the image), then move the cursor back up and draw the image into that
+# empty margin. Drawing the image last means no text printing can scroll/shift
+# it, so the image and the info are reliably side by side.
 import os, sys, glob, re, subprocess
 
 HOME = os.path.expanduser("~")
@@ -12,7 +17,6 @@ FASTFETCH = "/usr/bin/fastfetch"
 RESET = "\x1b[0m"
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
-# distinct, readable colors for each info line (truecolor)
 PALETTE = [
     "\x1b[38;2;122;162;247m",  # blue
     "\x1b[38;2;115;218;202m",  # teal
@@ -54,10 +58,15 @@ def pick_image():
     return imgs[idx]
 
 def colorize(lines):
-    out = []
-    for i, l in enumerate(lines):
-        out.append(PALETTE[i % len(PALETTE)] + strip_ansi(l) + RESET)
-    return out
+    return [PALETTE[i % len(PALETTE)] + strip_ansi(l) + RESET for i, l in enumerate(lines)]
+
+def chafa_kitty(path, w, h):
+    art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", path])
+    art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
+    # drop terminal capability queries chafa sends at the start (they are no
+    # longer useful once the output is replayed and can confuse the terminal)
+    art = re.sub(r"(?:\x1b\[[0-9;]*t|\x1b\[[0-9;]*c)+", "", art, count=1)
+    return art.rstrip("\n")
 
 def main():
     args = sys.argv[1:]
@@ -70,31 +79,30 @@ def main():
     while lines and lines[0].strip() == "":
         lines.pop(0)
     n = max(1, len(lines))
-
-    if not img:
-        sys.stdout.write("\n".join(colorize(lines)) + "\n")
-        return
-
     lines = colorize(lines)
 
-    # image cell size: match info height but cap so it doesn't take too much space
-    h = max(8, min(n, 30))          # image height (1.5x of the previous 20-row cap)
-    w = h * 2                        # terminal cells are ~2:1 for a square image
+    if not img:
+        sys.stdout.write("\n".join(lines) + "\n")
+        return
+
+    # image height = 1.4x the earlier 20-row base
+    h = max(8, min(n, 28))
+    w = h * 2  # terminal cells are ~2:1 for a square image
 
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
 
     if is_kitty:
-        # draw the real PNG at the cursor, then print info to its right.
-        # chafa emits the image without moving the cursor (except a trailing newline
-        # which we strip), so we can reliably place the text beside it.
-        art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", img])
-        art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "").rstrip("\n")
-        sys.stdout.write(art)
+        # 1) print the info block with a left margin of w columns
         for i, line in enumerate(lines):
             sys.stdout.write(f"\x1b[{w}C" + line)
             if i != len(lines) - 1:
                 sys.stdout.write("\r\n")
-        sys.stdout.write(RESET + "\n")
+        sys.stdout.write("\r\n")
+        # 2) jump back to the first info row, column 0 and draw the image there
+        sys.stdout.write(f"\x1b[{n}A\r")
+        sys.stdout.write(chafa_kitty(img, w, h))
+        # 3) leave the cursor just below the whole block
+        sys.stdout.write(f"\x1b[{n}B\r")
         return
 
     # fallback: colored character-cell rendering (also fine in plain TTY)
