@@ -45,7 +45,7 @@ window-rule {
 // dms:blurwallpaper（总览壁纸）和 dms:niri-overview-spotlight（总览启动器），
 // 这样 mod+O 总览以及全屏背景层都不会被影响。
 layer-rule {
-    match namespace="^dms:(bar|dock|dash|control-center|spotlight|spotlight-bar|notification-center-modal|power-menu|system-updater|processlist|notepad|keybinds|keybinds-modal|window-rules|workspace-rename|widget|welcome|file|mux|tmux|wallpaper|profile|sessions|outputs|night|brightness|color-picker|theme|clipboard|tray|toast|settings|plugins|audio|bluetooth|network|power-profile|display|screenshot)$"
+    match namespace="^dms:(dash|control-center|spotlight|spotlight-bar|notification-center-modal|power-menu|system-updater|processlist|notepad|keybinds|keybinds-modal|window-rules|workspace-rename|widget|welcome|file|mux|tmux|wallpaper|profile|sessions|outputs|night|brightness|color-picker|theme|clipboard|tray|toast|settings|plugins|audio|bluetooth|network|power-profile|display|screenshot)$"
     background-effect {
         xray false
         blur true
