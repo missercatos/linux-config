@@ -15,7 +15,7 @@ binds {
     Mod+F8 hotkey-overlay-title="快速读档 Quick load" {spawn "quickload";}
 
     // 临时开一个浮动终端
-    Mod+Slash hotkey-overlay-title="临时终端 Quick Terminal" {spawn "kitty" "--single-instance" "--class" "quickterminal";}
+    Mod+Slash hotkey-overlay-title="临时终端 Quick Terminal" { spawn "kitty" "--single-instance" "--class" "quickterminal" "-e" "env" "FASTFETCH_SKIP=1" "fish"; }
     //打开浏览器
     Mod+B hotkey-overlay-title="浏览器 Browser" { spawn "firefox"; }        
     //opencode ai助手
