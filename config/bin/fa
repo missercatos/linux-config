@@ -84,11 +84,16 @@ def main():
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
 
     if is_kitty:
-        # save cursor, draw real PNG, restore cursor, then print info beside it
+        # vertically center the image against the info block
+        offset = max(0, (n - h) // 2)
+        if offset:
+            sys.stdout.write("\n" * offset)
         art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", img]).rstrip("\n")
-        sys.stdout.write("\x1b7")       # save cursor position
+        sys.stdout.write("\x1b7")       # save cursor position (image top)
         sys.stdout.write(art)            # place image at current cell
         sys.stdout.write("\x1b8")        # restore cursor to image origin
+        if offset:
+            sys.stdout.write(f"\x1b[{offset}A")  # go back up to the info start
         for i, line in enumerate(lines):
             sys.stdout.write(f"\x1b[{w}C" + line)
             if i != len(lines) - 1:
@@ -102,10 +107,12 @@ def main():
     art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
     art_lines = [l.rstrip("\x1b[39m").rstrip() for l in art.rstrip("\n").split("\n")]
     rows = max(len(art_lines), n)
+    offset = max(0, (rows - len(art_lines)) // 2)
     width = max((vlen(l) for l in art_lines), default=0)
     out = []
     for i in range(rows):
-        a = art_lines[i] if i < len(art_lines) else ""
+        ai = i - offset
+        a = art_lines[ai] if 0 <= ai < len(art_lines) else ""
         pad = " " * max(0, width - vlen(a))
         b = lines[i] if i < len(lines) else ""
         out.append(a.replace("\x1b[39m", RESET) + pad + "  " + b)
