@@ -3,7 +3,8 @@
   "barElevationEnabled": false,
   "blurEnabled": true,
   "blurredWallpaperLayer": true,
-  "blurWallpaperOnOverview": true,
+  "greeterShowWeather": false,
+  "weatherEnabled": false,
   "launcherLogoMode": "os",
   "notificationSummaryFontSize": 12,
   "notificationBodyFontSize": 10,
@@ -11,11 +12,14 @@
   "dockSmartAutoHide": true,
   "dockUseOverlayLayer": true,
   "dockLauncherEnabled": true,
+  "lockScreenShowWeather": false,
   "notificationTimeoutLow": 1000,
   "notificationTimeoutNormal": 1000,
   "notificationTimeoutCritical": 3000,
   "notificationIgnoreAppTimeout": true,
   "notificationCompactMode": true,
+  "notificationHistoryMaxCount": 10,
+  "notificationHistoryMaxAgeDays": 1,
   "barConfigs": [
     {
       "id": "default",
@@ -33,8 +37,7 @@
       ],
       "centerWidgets": [
         "music",
-        "clock",
-        "weather"
+        "clock"
       ],
       "rightWidgets": [
         "systemTray",
@@ -62,7 +65,7 @@
       "fontScale": 1,
       "autoHide": true,
       "autoHideDelay": 250,
-      "openOnOverview": false,
+      "openOnOverview": true,
       "visible": true,
       "popupGapsAuto": true,
       "popupGapsManual": 4,
