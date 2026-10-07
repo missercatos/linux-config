@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# fa — fastfetch with a rotating PNG image on the left.
+# fa — fastfetch with a rotating PNG image on the left and rainbow info on the right.
 #  In kitty: renders the real PNG via chafa's kitty graphics protocol.
 #  Otherwise: renders a colored chafa approximation.
 import os, sys, glob, re, subprocess
@@ -12,9 +12,30 @@ FASTFETCH = "/usr/bin/fastfetch"
 RESET = "\x1b[0m"
 
 ANSI = re.compile(r"\x1b\[[0-9;?]*[A-Za-z]")
+# distinct, readable colors for each info line (truecolor)
+PALETTE = [
+    "\x1b[38;2;122;162;247m",  # blue
+    "\x1b[38;2;115;218;202m",  # teal
+    "\x1b[38;2;187;154;247m",  # purple
+    "\x1b[38;2;125;207;255m",  # cyan
+    "\x1b[38;2;158;206;106m",  # green
+    "\x1b[38;2;224;175;104m",  # orange
+    "\x1b[38;2;247;118;142m",  # red
+    "\x1b[38;2;255;199;119m",  # yellow
+    "\x1b[38;2;187;154;247m",  # lavender
+    "\x1b[38;2;115;218;202m",  # aqua
+    "\x1b[38;2;122;162;247m",  # blue
+    "\x1b[38;2;158;206;106m",  # green
+]
 
 def vlen(s):
     return len(ANSI.sub("", s))
+
+def strip_ansi(s):
+    return ANSI.sub("", s)
+
+def run(cmd):
+    return subprocess.run(cmd, capture_output=True, text=True).stdout
 
 def pick_image():
     imgs = sorted(glob.glob(os.path.join(IMG_DIR, "*.png")))
@@ -32,14 +53,16 @@ def pick_image():
         pass
     return imgs[idx]
 
-def run(cmd):
-    return subprocess.run(cmd, capture_output=True, text=True).stdout
+def colorize(lines):
+    out = []
+    for i, l in enumerate(lines):
+        out.append(PALETTE[i % len(PALETTE)] + strip_ansi(l) + RESET)
+    return out
 
 def main():
     args = sys.argv[1:]
     img = pick_image()
 
-    # info panel without the built-in logo
     info = run([FASTFETCH, "--logo", "none"] + args)
     lines = info.split("\n")
     while lines and lines[-1].strip() == "":
@@ -49,26 +72,31 @@ def main():
     n = max(1, len(lines))
 
     if not img:
-        sys.stdout.write("\n".join(lines) + "\n")
+        sys.stdout.write("\n".join(colorize(lines)) + "\n")
         return
 
+    lines = colorize(lines)
+
+    # image cell size: match info height but cap so it doesn't take too much space
+    h = max(8, min(n, 20))
+    w = h * 2  # terminal cells are ~2:1 for a square image
+
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
-    h = max(8, n)
-    w = max(16, h * 2)
 
     if is_kitty:
-        # real image via kitty graphics protocol; cursor stays at image origin
-        art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", img])
-        sys.stdout.write(art)
-        # image is placed with cursor unchanged; print info beside it line by line
+        # save cursor, draw real PNG, restore cursor, then print info beside it
+        art = run([CHAFA, "-f", "kitty", "--size", f"{w}x{h}", "--", img]).rstrip("\n")
+        sys.stdout.write("\x1b7")       # save cursor position
+        sys.stdout.write(art)            # place image at current cell
+        sys.stdout.write("\x1b8")        # restore cursor to image origin
         for i, line in enumerate(lines):
-            sys.stdout.write(f"\x1b[{w}C" + RESET + line)
+            sys.stdout.write(f"\x1b[{w}C" + line)
             if i != len(lines) - 1:
                 sys.stdout.write("\r\n")
         sys.stdout.write(RESET + "\n")
         return
 
-    # fallback: colored character-cell rendering
+    # fallback: colored character-cell rendering (also fine in plain TTY)
     art = run([CHAFA, "--format", "symbols", "--symbols", "block+border+space",
                "--fg-only", "--size", f"{w}x{h}", "--", img])
     art = art.replace("\x1b[?25l", "").replace("\x1b[?25h", "")
@@ -80,7 +108,7 @@ def main():
         a = art_lines[i] if i < len(art_lines) else ""
         pad = " " * max(0, width - vlen(a))
         b = lines[i] if i < len(lines) else ""
-        out.append(a + pad + "  " + RESET + b)
+        out.append(a.replace("\x1b[39m", RESET) + pad + "  " + b)
     sys.stdout.write("\n".join(out) + "\n")
 
 if __name__ == "__main__":
