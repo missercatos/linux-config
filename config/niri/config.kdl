@@ -74,8 +74,8 @@ input {
         
 	// off
         // natural-scroll
-        // 鼠标速度
-        accel-speed -0.15
+        // 鼠标速度（正值更快）
+        accel-speed 0.6
         // 禁用鼠标加速 
         accel-profile "flat"
 	// scroll-method "no-scroll"
