@@ -20,9 +20,8 @@ $docker_context\
 [](fg:#06969A bg:#33658A)\
 $time\
 [ ](fg:#33658A)\
-$fill\
 $cmd_duration\
-$hostname\
+$line_break\
 $character"""
 
 # Disable the blank line at the start of the prompt
@@ -65,8 +64,8 @@ disabled = false
 [directory]
 style = "fg:#FFFFFF bg:#DA627D"
 format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
+truncation_length = 0
+truncate_to_repo = true
 
 # Here is how you can shorten some long paths by text replacement
 # similar to mapped_locations in Oh My Posh:
@@ -80,9 +79,6 @@ truncation_symbol = "…/"
 # will not be replaced, because "Documents" was already substituted before.
 # So either put "Important Documents" before "Documents" or use the substituted version:
 # "Important  " = "  "
-
-[fill]
-symbol = ' '
 
 [c]
 symbol = ""
