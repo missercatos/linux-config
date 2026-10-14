@@ -15,7 +15,7 @@ $java\
 $nodejs\
 $python\
 $rust\
-$custom )\
+$custom)\
 ([](fg:#86BBD8 bg:#06969A)\
 $docker_context)\
 ([](fg:#06969A bg:#33658A)\
@@ -84,7 +84,7 @@ truncate_to_repo = true
 [c]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [docker_context]
 symbol = ""
@@ -115,17 +115,17 @@ deleted = ""
 [golang]
 symbol = "go"
 style = "fg:#000000 bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [java]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [nodejs]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [python]
 # Display the version of python from inside a local venv.
@@ -134,12 +134,12 @@ format = '[ $symbol]($style)'
 # work in the directory that contains the venv dir but maybe this is ok?
 symbol = ' '
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [rust]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 
 [time]
 disabled = false
@@ -154,5 +154,5 @@ when = "test -n \"$(find . -maxdepth 1 -name '*.el' -print -quit)\""
 shell = ["bash", "--noprofile", "--norc"]
 symbol = ""
 style = "bg:#86BBD8"
-format = '[ $symbol]($style)'
+format = '[ $symbol ]($style)'
 description = "Emacs Lisp project"
