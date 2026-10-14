@@ -12,6 +12,7 @@ $git_status\
 [](fg:pink bg:green)\
 $c\
 $rust\
+$custom\
 $golang\
 $nodejs\
 $php\
@@ -180,3 +181,13 @@ comment = "#3a2554"
 base = "#150f1e"
 mantle = "#1e1529"
 crust = "#e8ddff"
+
+
+[custom.elisp]
+command = "true"
+when = "test -n \"$(find . -maxdepth 1 -name '*.el' -print -quit)\""
+shell = ["bash", "--noprofile", "--norc"]
+symbol = " "
+style = "bold green"
+format = "[$symbol]($style)"
+description = "Emacs Lisp project"

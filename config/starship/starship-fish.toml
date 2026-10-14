@@ -15,6 +15,7 @@ $java\
 $nodejs\
 $python\
 $rust\
+$custom\
 [](fg:#86BBD8 bg:#06969A)\
 $docker_context\
 [](fg:#06969A bg:#33658A)\
@@ -145,3 +146,13 @@ disabled = false
 time_format = "%R" # Hour:Minute Format
 style = "bg:#33658A"
 format = '[  $time ]($style)'
+
+
+[custom.elisp]
+command = "true"
+when = "test -n \"$(find . -maxdepth 1 -name '*.el' -print -quit)\""
+shell = ["bash", "--noprofile", "--norc"]
+symbol = " "
+style = "bold green"
+format = "[$symbol]($style)"
+description = "Emacs Lisp project"
