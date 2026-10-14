@@ -9,7 +9,7 @@ $directory\
 [](bg:pink fg:cyan)\
 $git_branch\
 $git_status\
-[](fg:pink bg:green)\
+([](fg:pink bg:green)\
 $c\
 $rust\
 $custom\
@@ -19,11 +19,11 @@ $php\
 $java\
 $kotlin\
 $haskell\
-$python\
-[](fg:green bg:comment)\
-$conda\
-[](fg:comment bg:comment)\
-$time\
+$python)\
+([](fg:green bg:comment)\
+$conda)\
+([](fg:comment bg:comment)\
+$time)\
 [ ](fg:comment)\
 $cmd_duration\
 $line_break\

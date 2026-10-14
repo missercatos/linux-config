@@ -9,20 +9,19 @@ $directory\
 [](fg:#008c9a bg:#00a1ae)\
 $git_branch\
 $git_status\
-[](fg:#00a1ae bg:#00c5cf)\
+([](fg:#00a1ae bg:#00c5cf)\
 $c\
 $golang\
 $java\
 $nodejs\
 $python\
 $rust\
-$custom\
-[](fg:#00c5cf bg:#FFFFFF)\
-$time\
+$custom)\
+([](fg:#00c5cf bg:#FFFFFF)\
+$time)\
 [ ](fg:#FFFFFF)\
-$fill\
 $cmd_duration\
-$hostname\
+$line_break\
 $character"""
 
 # Disable the blank line at the start of the prompt
