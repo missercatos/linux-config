@@ -138,7 +138,7 @@ def warm():
     imgs = sorted(glob.glob(os.path.join(IMG_DIR, "*.png")))
     term = shutil.get_terminal_size((100, 40))
     n_pred = max(1, len(run([FASTFETCH, "--logo", "none"]).split("\n")) - 1)
-    h = max(10, min(n_pred, 28))
+    h = max(10, min(n_pred, 40))
     w = h * 2
     for img in imgs:
         t = threading.Thread(target=get_palette, args=(img,))
@@ -187,7 +187,7 @@ def main():
     tcols = term.columns
     info_w = max((vlen(l) for l in lines), default=40) + 4
 
-    h = max(10, min(n, 28))
+    h = max(10, min(n, 40))
     w = h * 2
     max_w = max(16, tcols - info_w)
     if w > max_w:
@@ -205,9 +205,9 @@ def main():
         sys.stdout.write(f"\x1b[{n}A\r")
         sys.stdout.flush()
         sys.stdout.buffer.write(get_kitty(img, w, h))
-        if n > h:
-            sys.stdout.write(f"\x1b[{n - h}B")
-        sys.stdout.write("\r")
+        # 光标移到内容底部（取图像与信息行数的较大者），再换行，避免提示符吞掉最后一行
+        rows = max(n, h)
+        sys.stdout.write(f"\x1b[{rows}B\r\n")
         sys.stdout.buffer.flush()
         return
 
