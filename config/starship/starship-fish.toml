@@ -20,7 +20,7 @@ $custom)\
 $docker_context)\
 ([](fg:#06969A bg:#33658A)\
 $time)\
-[ ](fg:#33658A)\
+[](fg:#33658A)\
 $cmd_duration\
 $line_break\
 $character"""
@@ -113,7 +113,7 @@ renamed = "襁"
 deleted = ""
 
 [golang]
-symbol = "go"
+symbol = " "
 style = "fg:#000000 bg:#86BBD8"
 format = '[ $symbol ]($style)'
 
