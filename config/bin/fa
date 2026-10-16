@@ -205,8 +205,8 @@ def main():
         sys.stdout.write(f"\x1b[{n}A\r")
         sys.stdout.flush()
         sys.stdout.buffer.write(get_kitty(img, w, h))
-        # 光标回到信息区底部的空白行，提示符直接从这里开始
-        sys.stdout.write(f"\x1b[{n}B\r")
+        # 光标绝对定位到信息区下一行（kitty 图形协议会自行下移，这里避免相对位移累加）
+        sys.stdout.buffer.write(f"\x1b[{n + 1};1H".encode())
         sys.stdout.buffer.flush()
         return
 
