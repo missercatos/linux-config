@@ -83,12 +83,13 @@ truncate_to_repo = true
 
 [c]
 symbol = ""
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#A8B9CC bg:#7dcfff"
 format = '[ $symbol ]($style)'
+
 
 [docker_context]
 symbol = ""
-style = "fg:#cbccd1 bg:#444b6a"
+style = "fg:#2496ED bg:#444b6a"
 format = '[ $symbol $context ]($style) $path'
 
 [git_branch]
@@ -114,17 +115,17 @@ deleted = ""
 
 [golang]
 symbol = " "
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#00ADD8 bg:#7dcfff"
 format = '[ $symbol ]($style)'
 
 [java]
 symbol = ""
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#E76F00 bg:#7dcfff"
 format = '[ $symbol ]($style)'
 
 [nodejs]
 symbol = ""
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#339933 bg:#7dcfff"
 format = '[ $symbol ]($style)'
 
 [python]
@@ -133,12 +134,12 @@ format = '[ $symbol ]($style)'
 # Note this will only work when the venv is inside the project and it will only
 # work in the directory that contains the venv dir but maybe this is ok?
 symbol = ' '
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#FFD43B bg:#7dcfff"
 format = '[ $symbol ]($style)'
 
 [rust]
 symbol = ""
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#CE422B bg:#7dcfff"
 format = '[ $symbol ]($style)'
 
 [time]
@@ -148,11 +149,29 @@ style = "fg:#cbccd1 bg:#2f3549"
 format = '[  $time ]($style)'
 
 
+[custom.cpp]
+command = "true"
+when = "test -n \"$(find . -maxdepth 1 \\( -name '*.cpp' -o -name '*.cc' -o -name '*.cxx' \\) -print -quit)\""
+shell = ["bash", "--noprofile", "--norc"]
+symbol = ""
+style = "fg:#00599C bg:#7dcfff"
+format = '[ $symbol ]($style)'
+description = "C++ project"
+
 [custom.elisp]
 command = "true"
 when = "test -n \"$(find . -maxdepth 1 -name '*.el' -print -quit)\""
 shell = ["bash", "--noprofile", "--norc"]
 symbol = ""
-style = "fg:#16161e bg:#7dcfff"
+style = "fg:#7F5AB6 bg:#7dcfff"
 format = '[ $symbol ]($style)'
 description = "Emacs Lisp project"
+
+[custom.csharp]
+command = "true"
+when = "test -n \"$(find . -maxdepth 1 -name '*.cs' -print -quit)\""
+shell = ["bash", "--noprofile", "--norc"]
+symbol = "󰌛"
+style = "fg:#9B4F96 bg:#7dcfff"
+format = '[ $symbol ]($style)'
+description = "C# project"
