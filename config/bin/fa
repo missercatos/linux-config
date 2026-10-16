@@ -205,9 +205,8 @@ def main():
         sys.stdout.write(f"\x1b[{n}A\r")
         sys.stdout.flush()
         sys.stdout.buffer.write(get_kitty(img, w, h))
-        # 光标移到内容底部（取图像与信息行数的较大者），再换行，避免提示符吞掉最后一行
-        rows = max(n, h)
-        sys.stdout.write(f"\x1b[{rows}B\r\n")
+        # 光标回到信息区底部的空白行，提示符直接从这里开始
+        sys.stdout.write(f"\x1b[{n}B\r")
         sys.stdout.buffer.flush()
         return
 
