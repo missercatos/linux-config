@@ -197,16 +197,22 @@ def main():
     is_kitty = ("kitty" in os.environ.get("TERM", "")) or ("KITTY_WINDOW_ID" in os.environ)
 
     if is_kitty:
+        art = get_kitty(img, w, h)
+        txt = art.decode("latin1")
+        m = re.search(r"c=(\d+),r=(\d+)", txt)
+        c_actual = int(m.group(1)) if m else w
+        r_actual = int(m.group(2)) if m else h
+        off = c_actual + 2
         for i, line in enumerate(lines):
-            sys.stdout.write(f"\x1b[{w}C" + line)
+            sys.stdout.buffer.write((f"\x1b[{off}C" + line).encode("utf-8"))
             if i != len(lines) - 1:
-                sys.stdout.write("\r\n")
-        sys.stdout.write("\r\n")
-        sys.stdout.write(f"\x1b[{n}A\r")
-        sys.stdout.flush()
-        sys.stdout.buffer.write(get_kitty(img, w, h))
-        # kitty 图形协议绘制后光标已下移 h 行；再下移 n-h 行到达信息区末尾的空白行
-        delta = max(0, n - h)
+                sys.stdout.buffer.write(b"\r\n")
+        sys.stdout.buffer.write(b"\r\n")
+        sys.stdout.buffer.write(f"\x1b[{n}A\r".encode())
+        sys.stdout.buffer.flush()
+        sys.stdout.buffer.write(art)
+        # kitty 实际推进 r_actual 行，补足到信息区末尾
+        delta = max(0, n - r_actual)
         sys.stdout.buffer.write(f"\x1b[{delta}B\r".encode() if delta else b"\r")
         sys.stdout.buffer.flush()
         return
